@@ -1,0 +1,4 @@
+#!/home/amosbrown/pydev/pwadio_env/bin/python
+
+from scrapy.cmdline import execute
+execute()
