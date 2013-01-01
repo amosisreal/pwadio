@@ -43,7 +43,7 @@ class LibraryConnection(models.Model):
     developer_ID = models.CharField(max_length=200)
     description = models.CharField(max_length=600)
 
-class radio_station(models.Model):
+class RadioStation(models.Model):
     date_added = models.DateTimeField('Date Added')
     name = models.CharField(max_length=200)
     URL = models.CharField(max_length=200)
@@ -61,19 +61,19 @@ class radio_station(models.Model):
             return self.name
 
 
-class processing_Time(models.Model):
-    station_ID = models.ForeignKey(radio_station)
+class ProcessingTime(models.Model):
+    station_ID = models.ForeignKey(RadioStation)
     date_added = models.DateTimeField('Date Added')
     download_site_time = models.DecimalField(decimal_places=5, max_digits=10)
     processing_time = models.DecimalField(decimal_places=5, max_digits=10)
     total_elapsed_time = models.DecimalField(decimal_places=5, max_digits=10)
     number_of_tracks_added_this_batch = models.IntegerField()
 
-class running_playlist(models.Model):
+class RunningPlaylist(models.Model):
     Unique_ID = models.CharField(max_length=200)
     date_added = models.DateTimeField('Date Added')
     time_played = models.DateTimeField('Date Added')
-    radio_station = models.ForeignKey(radio_station)
+    radio_station = models.ForeignKey(RadioStation)
     artist_name_text = models.CharField(max_length=200)
     track_name_text = models.CharField(max_length=200)
     artist = models.CharField(max_length=200)
@@ -82,7 +82,7 @@ class running_playlist(models.Model):
     def __unicode__(self):
             return self.artist_name_text
 
-class iTunes_track_info(models.Model):
+class ItunesTrackInfo(models.Model):
     date_added = models.DateTimeField('Date Added')
     wrapper_type = models.CharField(max_length=50)
     kind = models.CharField(max_length=50)
