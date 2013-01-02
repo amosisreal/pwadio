@@ -5,7 +5,7 @@ from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie.authentication import BasicAuthentication, ApiKeyAuthentication
 from tastypie.authorization import DjangoAuthorization
 
-from pwadio.models import RunningPlaylist, RadioStation, ProcessingTime, ItunesTrackInfo
+from pwadio_be.models import RunningPlaylist, RadioStation, ProcessingTime, ItunesTrackInfo
 
 class UserResource(ModelResource):
     class Meta:
@@ -27,7 +27,7 @@ class RadioStationResource(ModelResource):
 
 
 class RunningPlaylistResource(ModelResource):
-    radio_station = fields.ForeignKey(RadioStationResource, 'RadioStation', full=True)
+    radio_station = fields.ForeignKey(RadioStationResource, 'radio_station', full=True)
 
     class Meta:
         queryset = RunningPlaylist.objects.all()
@@ -57,6 +57,6 @@ class ProcessingTimeResource(ModelResource):
 class ItunesTrackInfoResource(ModelResource):
     class Meta:
             queryset = ItunesTrackInfo.objects.all()
-            resource_name = 'iTunestracks'
+            resource_name = 'iTunesTracks'
             allowed_methods = ['get']
 
