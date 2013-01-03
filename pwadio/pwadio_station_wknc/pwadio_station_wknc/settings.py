@@ -7,22 +7,22 @@
 #
 
 BOT_NAME = 'pwadio_station_wknc'
-BOT_VERSION = '1.0'
+#BOT_VERSION = '1.0'
 
 SPIDER_MODULES = ['pwadio_station_wknc.spiders']
 NEWSPIDER_MODULE = 'pwadio_station_wknc.spiders'
-USER_AGENT = '%s/%s' % (BOT_NAME, BOT_VERSION)
+#USER_AGENT = '%s/%s' % (BOT_NAME, BOT_VERSION)
 
 ITEM_PIPELINES = [
     'pwadio_station_wknc.pipelines.PwadioStationWkncPipeline',
     ]
 
-#EXTENSIONS = {
-#    'pwadio_station_wknc.extensions.SpiderOpenCloseLogging':500,
-#}
+EXTENSIONS = {
+    'pwadio_station_wknc.extensions.LogSpiderStats':500,
+}
 
-#MYEXT_ENABLED = True
-#MYEXT_ITEMCOUNT = "1000"
+MYEXT_ENABLED = True
+MYEXT_ITEMCOUNT = "1000"
 
 STATS_CLASS = "scrapy.statscol.MemoryStatsCollector"
 

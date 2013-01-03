@@ -4,7 +4,7 @@
 # http://doc.scrapy.org/topics/items.html
 
 from scrapy.item import Item, Field
-from scrapy.contrib_exp.djangoitem import DjangoItem
+from scrapy.contrib.djangoitem import DjangoItem
 from pwadio_be.models import RunningPlaylist, RadioStation
 
 #class PwadioStationWkncItem(Item):

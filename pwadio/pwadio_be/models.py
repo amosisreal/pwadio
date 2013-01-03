@@ -12,6 +12,7 @@ class Artist(models.Model):
     FreeDB_ID = models.CharField(max_length=200)
     description = models.CharField(max_length=600)
     iTunes_ID = models.CharField(max_length=200)
+    #spotifyID = models.CharField(max_length=200, default=0)
 
 class Album(models.Model):
     date_added = models.DateTimeField('Date Added')
@@ -22,6 +23,7 @@ class Album(models.Model):
     AllMusic_ID = models.CharField(max_length=200)
     FreeDB_ID = models.CharField(max_length=200)
     iTunes_ID = models.CharField(max_length=200)
+    #spotifyID = models.CharField(max_length=200, default=0)
 
 class Track(models.Model):
     date_added = models.DateTimeField('Date Added')
@@ -33,6 +35,7 @@ class Track(models.Model):
     AllMusic_ID = models.CharField(max_length=200)
     FreeDB_ID = models.CharField(max_length=200)
     iTunes_ID = models.CharField(max_length=200)
+    #spotifyID = models.CharField(max_length=200, default=0)
 
 class LibraryConnection(models.Model):
     date_added = models.DateTimeField('Date Added')
@@ -77,7 +80,9 @@ class RunningPlaylist(models.Model):
     artist_name_text = models.CharField(max_length=200)
     track_name_text = models.CharField(max_length=200)
     artist = models.CharField(max_length=200)
-    track = models.CharField(max_length=200)
+    # change this to ForeignKey to Artist Table.
+    track = models.CharField(max_length=200, default=0)
+    # change this to ForeignKey to Track Table.
 
     def __unicode__(self):
             return self.artist_name_text
