@@ -1,6 +1,45 @@
 from django.db import models
 
 # Create your models here.
+class ItunesTrackInfo(models.Model):
+    date_added = models.DateTimeField('Date Added')
+    wrapper_type = models.CharField(max_length=50)
+    kind = models.CharField(max_length=50)
+    artist_id = models.CharField(max_length=50, unique=True)
+    collection_Id = models.CharField(max_length=50)
+    track_id = models.CharField(max_length=50, unique=True)
+    artist_name = models.CharField(max_length=200)
+    collection_name = models.CharField(max_length=200)
+    track_name = models.CharField(max_length=200)
+    collection_censored_name = models.CharField(max_length=200)
+    track_censored_name = models.CharField(max_length=200)
+    artist_view_URL = models.CharField(max_length=400)
+    collection_view_URL = models.CharField(max_length=400)
+    track_view_URL = models.CharField(max_length=400)
+    preview_URL = models.CharField(max_length=400)
+    artwork_URL_30 = models.CharField(max_length=400)
+    artwork_URL_60 = models.CharField(max_length=400)
+    artwork_URL_100 = models.CharField(max_length=400)
+    collection_price = models.CharField(max_length=50)
+    track_price = models.CharField(max_length=50)
+    release_date = models.CharField(max_length=50)
+    collection_explicitness = models.CharField(max_length=50)
+    track_explicitness = models.CharField(max_length=50)
+    disc_count = models.CharField(max_length=50)
+    disc_number = models.CharField(max_length=50)
+    track_count = models.CharField(max_length=50)
+    track_number = models.CharField(max_length=50)
+    track_time_millis = models.CharField(max_length=50)
+    country = models.CharField(max_length=50)
+    currency = models.CharField(max_length=50)
+    primary_genre_name = models.CharField(max_length=50)
+    content_advisory_rating = models.CharField(max_length=50)
+    short_description = models.CharField(max_length=400)
+    long_description = models.CharField(max_length=400)
+
+def __unicode__(self):
+    return self.artist_name
+
 class Artist(models.Model):
     date_added = models.DateTimeField('Date Added')
     name = models.CharField(max_length=200)
@@ -11,7 +50,7 @@ class Artist(models.Model):
     AllMusic_ID = models.CharField(max_length=200)
     FreeDB_ID = models.CharField(max_length=200)
     description = models.CharField(max_length=600)
-    iTunes_ID = models.ForeignKey(ItunesTrackInfo, to_field='artist_id')
+    iTunes_ID = models.ForeignKey(ItunesTrackInfo, to_field='artist_id', related_name='+')
     spotifyID = models.CharField(max_length=200, default=0)
 
 class Album(models.Model):
@@ -34,7 +73,7 @@ class Track(models.Model):
     CDDB_ID = models.CharField(max_length=200)
     AllMusic_ID = models.CharField(max_length=200)
     FreeDB_ID = models.CharField(max_length=200)
-    iTunes_ID = models.ForeignKey(ItunesTrackInfo, to_field='track_id')
+    iTunes_ID = models.ForeignKey(ItunesTrackInfo, to_field='track_id', related_name='+')
     spotifyID = models.CharField(max_length=200, default=0)
 
 class LibraryConnection(models.Model):
@@ -89,43 +128,4 @@ class RunningPlaylist(models.Model):
 
     def __unicode__(self):
             return self.artist_name_text
-
-class ItunesTrackInfo(models.Model):
-    date_added = models.DateTimeField('Date Added')
-    wrapper_type = models.CharField(max_length=50)
-    kind = models.CharField(max_length=50)
-    artist_id = models.CharField(max_length=50)
-    collection_Id = models.CharField(max_length=50)
-    track_id = models.CharField(max_length=50)
-    artist_name = models.CharField(max_length=200)
-    collection_name = models.CharField(max_length=200)
-    track_name = models.CharField(max_length=200)
-    collection_censored_name = models.CharField(max_length=200)
-    track_censored_name = models.CharField(max_length=200)
-    artist_view_URL = models.CharField(max_length=400)
-    collection_view_URL = models.CharField(max_length=400)
-    track_view_URL = models.CharField(max_length=400)
-    preview_URL = models.CharField(max_length=400)
-    artwork_URL_30 = models.CharField(max_length=400)
-    artwork_URL_60 = models.CharField(max_length=400)
-    artwork_URL_100 = models.CharField(max_length=400)
-    collection_price = models.CharField(max_length=50)
-    track_price = models.CharField(max_length=50)
-    release_date = models.CharField(max_length=50)
-    collection_explicitness = models.CharField(max_length=50)
-    track_explicitness = models.CharField(max_length=50)
-    disc_count = models.CharField(max_length=50)
-    disc_number = models.CharField(max_length=50)
-    track_count = models.CharField(max_length=50)
-    track_number = models.CharField(max_length=50)
-    track_time_millis = models.CharField(max_length=50)
-    country = models.CharField(max_length=50)
-    currency = models.CharField(max_length=50)
-    primary_genre_name = models.CharField(max_length=50)
-    content_advisory_rating = models.CharField(max_length=50)
-    short_description = models.CharField(max_length=400)
-    long_description = models.CharField(max_length=400)
-    
-    def __unicode__(self):
-            return self.artist_name
 
