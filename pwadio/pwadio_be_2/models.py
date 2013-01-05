@@ -37,8 +37,21 @@ class ItunesTrackInfo(models.Model):
     short_description = models.CharField(max_length=400)
     long_description = models.CharField(max_length=400)
 
-def __unicode__(self):
-    return self.artist_name
+    def __unicode__(self):
+        return self.artist_name
+
+class MusicServices(models.Model):
+    date_added = models.DateTimeField('Date Added')
+    name = models.CharField(max_length=200)
+    URL = models.CharField(max_length=200)
+    apiURL = models.CharField(max_length=200)
+    description = models.CharField(max_length=600)
+    search_API_URL = models.CharField(max_length=200)
+    search_URL = models.CharField(max_length=200)
+    developer_ID = models.CharField(max_length=200)
+	
+    def __unicode__(self):
+    	return self.name
 
 class Artist(models.Model):
     date_added = models.DateTimeField('Date Added')
@@ -46,23 +59,12 @@ class Artist(models.Model):
     URL = models.CharField(max_length=200)
     zip = models.CharField(max_length=200)
     genre = models.CharField(max_length=200)
-    CDDB_ID = models.CharField(max_length=200)
-    AllMusic_ID = models.CharField(max_length=200)
-    FreeDB_ID = models.CharField(max_length=200)
-    description = models.CharField(max_length=600)
-    iTunes_ID = models.ForeignKey(ItunesTrackInfo, to_field='artist_id', related_name='+')
-    spotifyID = models.CharField(max_length=200, default=0)
 
 class Album(models.Model):
     date_added = models.DateTimeField('Date Added')
     year_released = models.DateTimeField('Year Released')
     name = models.CharField(max_length=200)
     artist = models.ForeignKey(Artist)
-    CDDB_ID = models.CharField(max_length=200)
-    AllMusic_ID = models.CharField(max_length=200)
-    FreeDB_ID = models.CharField(max_length=200)
-    iTunes_ID = models.CharField(max_length=200)
-    spotifyID = models.CharField(max_length=200, default=0)
 
 class Track(models.Model):
     date_added = models.DateTimeField('Date Added')
@@ -70,20 +72,18 @@ class Track(models.Model):
     track_name = models.CharField(max_length=200)
     artist = models.ForeignKey(Artist)
     #album = models.ForeignKey(Album)
-    CDDB_ID = models.CharField(max_length=200)
-    AllMusic_ID = models.CharField(max_length=200)
-    FreeDB_ID = models.CharField(max_length=200)
-    iTunes_ID = models.ForeignKey(ItunesTrackInfo, to_field='track_id', related_name='+')
-    spotifyID = models.CharField(max_length=200, default=0)
 
-class LibraryConnection(models.Model):
+class MusicServices_Artist_Lookup(models.Model):
     date_added = models.DateTimeField('Date Added')
-    name = models.CharField(max_length=200)
-    URL = models.CharField(max_length=200)
-    search_API_URL = models.CharField(max_length=200)
-    search_URL = models.CharField(max_length=200)
-    developer_ID = models.CharField(max_length=200)
-    description = models.CharField(max_length=600)
+    artist = models.ForeignKey(Artist, related_name='+')
+    music_service = models.ForeignKey(MusicServices, related_name='+')
+    music_service_object_id_from_web = models.CharField(max_length=200)
+
+class MusicServices_Track_Lookup(models.Model):
+    date_added = models.DateTimeField('Date Added')
+    track = models.ForeignKey(Track, related_name='+')
+    music_service = models.ForeignKey(MusicServices, related_name='+')
+    music_service_object_id_from_web = models.CharField(max_length=200)
 
 class RadioStation(models.Model):
     date_added = models.DateTimeField('Date Added')
@@ -100,8 +100,7 @@ class RadioStation(models.Model):
     description = models.CharField(max_length=600)
 
     def __unicode__(self):
-            return self.name
-
+        return self.name
 
 class ProcessingTime(models.Model):
     station_ID = models.ForeignKey(RadioStation)
@@ -127,5 +126,5 @@ class RunningPlaylist(models.Model):
     # change this to ForeignKey to Track Table.
 
     def __unicode__(self):
-            return self.artist_name_text
+        return self.artist_name_text
 
