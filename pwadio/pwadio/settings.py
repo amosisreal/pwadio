@@ -121,6 +121,7 @@ INSTALLED_APPS = (
      'django.contrib.admindocs',
      'south',
      'pwadio_be',
+     'pwadio_be_2',
      'tastypie',
 )
 
