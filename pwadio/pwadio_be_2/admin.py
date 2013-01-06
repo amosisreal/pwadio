@@ -41,12 +41,12 @@ class MusicServices_Track_LookupAdmin(admin.ModelAdmin):
 admin.site.register(MusicServices_Track_Lookup, MusicServices_Track_LookupAdmin)
 
 class ArtistAdmin(admin.ModelAdmin):
-    list_display = ('name','date_added','zip','genre')
+    list_display = ('name','date_added')
 
 admin.site.register(Artist, ArtistAdmin)
 
 class TrackAdmin(admin.ModelAdmin):
-    list_display = ('track_name','date_added','year_released','artist')
+    list_display = ('name','date_added', 'artist')
 
 admin.site.register(Track, TrackAdmin)
 

@@ -60,7 +60,7 @@ class PwadioStationWknc2Pipeline(object):
             # Compare item track_name_text to track.name - if exists do something, if not, add it.
             try:
                 print "~~~~~~~~~~~~~~~~~~~~~" + item['track_name_text']+ "~~~~~~~~~~~~~~~~~~~~~~"
-                check_for_track = Track.objects.get(track_name__iexact=""+item['track_name_text']+"")
+                check_for_track = Track.objects.get(name =""+item['track_name_text']+"")
                 print "#~#~#~#~#~#~#" + check_for_artist.name + "#~#~#~#~#~#~#~#~#"
                 if check_for_artist:
                     item['track'] = check_for_track
@@ -70,7 +70,7 @@ class PwadioStationWknc2Pipeline(object):
 	            #print "Error %d: %s" % (e.args[0], e.args[1])
             except:
                 try:
-                    add_track = Track.objects.create(track_name=item['track_name_text'], date_added=item['true_date'], year_released=datetime.datetime(1700,1,1,1,1,1,), artist=item['artist'])
+                    add_track = Track.objects.create(name=item['track_name_text'], date_added=item['true_date'], artist=item['artist'])
                     item['track'] = add_track
                 except:
                     print "><><><><><><><><><><><><><><><> something failed with the track thing, setting to default."

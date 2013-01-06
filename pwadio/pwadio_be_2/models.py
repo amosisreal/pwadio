@@ -56,9 +56,9 @@ class MusicServices(models.Model):
 class Artist(models.Model):
     date_added = models.DateTimeField('Date Added')
     name = models.CharField(max_length=200)
-    URL = models.CharField(max_length=200)
-    zip = models.CharField(max_length=200)
-    genre = models.CharField(max_length=200)
+    #URL = models.CharField(max_length=200)
+    #zip = models.CharField(max_length=200)
+    #genre = models.CharField(max_length=200)
 
     def __unicode__(self):
         return self.name
@@ -74,13 +74,13 @@ class Album(models.Model):
 
 class Track(models.Model):
     date_added = models.DateTimeField('Date Added')
-    year_released = models.DateTimeField('Year Released')
-    track_name = models.CharField(max_length=200)
+    #year_released = models.DateTimeField('Year Released')
+    name = models.CharField(max_length=200)
     artist = models.ForeignKey(Artist)
     #album = models.ForeignKey(Album)
 
     def __unicode__(self):
-        return self.track_name
+        return self.name
 
 class MusicServices_Artist_Lookup(models.Model):
     date_added = models.DateTimeField('Date Added')
