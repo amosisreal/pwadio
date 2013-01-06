@@ -14,9 +14,9 @@ NEWSPIDER_MODULE = 'pwadio_station_wknc_2.spiders'
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'pwadio_station_wknc_2 (+http://www.yourdomain.com)'
 
-#ITEM_PIPELINES = [
-#    'pwadio_station_wknc_2.pipelines.PwadioStationWkncPipeline',
-#    ]
+ITEM_PIPELINES = [
+    'pwadio_station_wknc_2.pipelines.PwadioStationWknc2Pipeline',
+    ]
 
 #EXTENSIONS = {
 #    'pwadio_station_wknc_2.extensions.LogSpiderStats':500,

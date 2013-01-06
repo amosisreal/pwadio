@@ -10,7 +10,7 @@ import string
 import types
 
 from pwadio_station_wknc_2.items import PwadioStationWknc2Item
-from pwadio_be_2.models import RunningPlaylist, RadioStation, Artist, Track, MusicServices, Album, MusicServices_Artist_Lookup, MusicServices_Track_Lookup
+from pwadio_be_2.models import RunningPlaylist, RadioStation, ProcessingTime, Artist, Track, MusicServices, Album, MusicServices_Artist_Lookup, MusicServices_Track_Lookup
 
 class pwadio_station_wknc2Spider(BaseSpider):
 
@@ -23,9 +23,10 @@ class pwadio_station_wknc2Spider(BaseSpider):
     def parse(self, response):
         hxs = HtmlXPathSelector(response)
 	#this is a hack to ge the radio station.  This should be a select from existing objects.
-        rs = RadioStation()
-        rs.id = 1
-        rs.name = 'wknc'
+        rs = RadioStation.objects.get(pk=1)
+        pt = ProcessingTime.objects.get(pk=1)
+	#rs.id = 1
+        #rs.name = 'wknc'
         #get date from website
         date_str= hxs.select('//div/div/h1/text()').extract()
         date_str = date_str[1].split()
@@ -42,6 +43,7 @@ class pwadio_station_wknc2Spider(BaseSpider):
             item = PwadioStationWknc2Item()
             item['radio_station'] = rs
             item['radio_station_id'] = 1
+	    item['processing_time'] = pt
             #time_played comes back as a list with one index.  [0]
             time_played = song.select('td[position()=1]/text()').extract()
             time_played = time_played[0].replace(" ","")
@@ -75,8 +77,8 @@ class pwadio_station_wknc2Spider(BaseSpider):
             #create the Unique_ID from the radio station call letters, and cobbled date_time
             song_guid = rs.name + filter(lambda c: c in string.digits, str(date))
             item['Unique_ID'] = song_guid
-            item['artist'] = '0'
-            item['track'] = '0'
+            #item['artist'] = '0'
+            #item['track'] = '0'
             items.append(item)
 
 	#reverse items in list for proper chronology.

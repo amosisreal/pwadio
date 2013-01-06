@@ -60,11 +60,17 @@ class Artist(models.Model):
     zip = models.CharField(max_length=200)
     genre = models.CharField(max_length=200)
 
+    def __unicode__(self):
+        return self.name
+
 class Album(models.Model):
     date_added = models.DateTimeField('Date Added')
     year_released = models.DateTimeField('Year Released')
     name = models.CharField(max_length=200)
     artist = models.ForeignKey(Artist)
+
+    def __unicode__(self):
+        return self.name
 
 class Track(models.Model):
     date_added = models.DateTimeField('Date Added')
@@ -72,6 +78,9 @@ class Track(models.Model):
     track_name = models.CharField(max_length=200)
     artist = models.ForeignKey(Artist)
     #album = models.ForeignKey(Album)
+
+    def __unicode__(self):
+        return self.track_name
 
 class MusicServices_Artist_Lookup(models.Model):
     date_added = models.DateTimeField('Date Added')

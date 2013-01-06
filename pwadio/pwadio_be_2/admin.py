@@ -1,16 +1,16 @@
 from pwadio_be_2.models import Artist, Album, Track, RadioStation, ProcessingTime, RunningPlaylist, ItunesTrackInfo, MusicServices, MusicServices_Artist_Lookup, MusicServices_Track_Lookup
 from django.contrib import admin
 
-admin.site.register(Artist)
-admin.site.register(Album)
-admin.site.register(Track)
+#admin.site.register(Artist)
+#admin.site.register(Album)
+#admin.site.register(Track)
 admin.site.register(RadioStation)
 #admin.site.register(MusicServices)
 #admin.site.register(MusicServices_Artist_Lookup)
 #admin.site.register(MusicServices_Track_Lookup)
 
 class RunningPlaylistAdmin(admin.ModelAdmin):
-    list_display =  ('radio_station', 'date_added','artist_name_text', 'track_name_text')
+    list_display =  ('radio_station', 'date_added','artist_name_text', 'track_name_text', 'artist', 'track')
 #    pass
 
 admin.site.register(RunningPlaylist, RunningPlaylistAdmin)
@@ -39,3 +39,14 @@ class MusicServices_Track_LookupAdmin(admin.ModelAdmin):
     list_display = ('date_added','track','music_service','music_service_object_id_from_web')
 
 admin.site.register(MusicServices_Track_Lookup, MusicServices_Track_LookupAdmin)
+
+class ArtistAdmin(admin.ModelAdmin):
+    list_display = ('name','date_added','zip','genre')
+
+admin.site.register(Artist, ArtistAdmin)
+
+class TrackAdmin(admin.ModelAdmin):
+    list_display = ('track_name','date_added','year_released','artist')
+
+admin.site.register(Track, TrackAdmin)
+
