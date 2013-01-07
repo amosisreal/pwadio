@@ -81,6 +81,23 @@ class PwadioStationWknc2Pipeline(object):
           
             # Gather iTunes track info, compare to db, add it if it doesn't exist.
 	    try:
+		ms = MusicServices.objects.get(pk=1)
+	    except: 	    
+		print "unable to instantiate MusicService."
+	   
+    	    try:
+	        a_msl = MusicServices_Artist_Lookup.objects.create(date_added=item['processing_time'].start_time, artist=item['artist'], music_service=ms, music_service_object_id_from_web="0")
+	    except Exception as e:
+		print "unable to assign artist to MSAL."
+		print e
+
+	    try:
+		t_msl = MusicServices_Track_Lookup.objects.create(date_added=item['processing_time'].start_time, track=item['track'], music_service=ms, music_service_object_id_from_web="0")
+	    except:
+		print "unable to assign track to MSTL."
+
+     
+            try:
 	        item.save()
 	    except MySQLdb.Error, e:
 	        print "exception found"
