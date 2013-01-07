@@ -33,6 +33,8 @@ class PwadioStationWknc2Pipeline(object):
     def process_item(self, item, spider):
         if(item['true_date'] > self.last_date_in_db):
 	    print "true_date is is more recent than last_date_in_db, add it to db"
+            item['processing_time'].number_of_tracks_added_this_batch += 1
+	    item['processing_time'].save()	
 	    # Okay, now we have a new track, let's get the itunes info based on
 	    # artist and track name.
             ### New flow here
@@ -85,4 +87,5 @@ class PwadioStationWknc2Pipeline(object):
 	        print "Error %d: %s" % (e.args[0], e.args[1])
     	else:
 	    print "bypass this one, it is older"
+	
     	return item

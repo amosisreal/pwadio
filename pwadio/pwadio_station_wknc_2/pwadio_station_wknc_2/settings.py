@@ -18,9 +18,9 @@ ITEM_PIPELINES = [
     'pwadio_station_wknc_2.pipelines.PwadioStationWknc2Pipeline',
     ]
 
-#EXTENSIONS = {
-#    'pwadio_station_wknc_2.extensions.LogSpiderStats':500,
-#}
+EXTENSIONS = {
+    'pwadio_station_wknc_2.extensions.LogSpiderStats':500,
+}
 
 MYEXT_ENABLED = True
 MYEXT_ITEMCOUNT = "1000"

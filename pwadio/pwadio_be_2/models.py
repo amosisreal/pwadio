@@ -118,6 +118,12 @@ class ProcessingTime(models.Model):
     processing_time = models.DecimalField(decimal_places=5, max_digits=10)
     total_elapsed_time = models.DecimalField(decimal_places=5, max_digits=10)
     number_of_tracks_added_this_batch = models.IntegerField()
+    start_time = models.DateTimeField('Start Time')
+    finish_time = models.DateTimeField('Finish Time')
+    finish_reason = models.CharField(max_length='200')
+
+    def __unicode__(self):
+        return self.start_time
 
 class RunningPlaylist(models.Model):
     processing_time = models.ForeignKey(ProcessingTime)

@@ -22,11 +22,9 @@ class pwadio_station_wknc2Spider(BaseSpider):
 
     def parse(self, response):
         hxs = HtmlXPathSelector(response)
-	#this is a hack to ge the radio station.  This should be a select from existing objects.
         rs = RadioStation.objects.get(pk=1)
-        pt = ProcessingTime.objects.get(pk=1)
-	#rs.id = 1
-        #rs.name = 'wknc'
+        #pt = ProcessingTime.objects.get(pk=1)
+        pt = ProcessingTime.objects.create(station_ID=rs, date_added=self._crawler.stats._stats['start_time'], download_site_time=0, processing_time=0, total_elapsed_time=0, number_of_tracks_added_this_batch=0) 
         #get date from website
         date_str= hxs.select('//div/div/h1/text()').extract()
         date_str = date_str[1].split()
