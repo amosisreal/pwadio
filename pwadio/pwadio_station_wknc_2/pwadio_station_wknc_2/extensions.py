@@ -32,13 +32,19 @@ class LogSpiderStats(object):
 
 
     def spider_closed(self, spider):
-        spider.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`")
+	pt = ProcessingTime.objects.get(start_time=spider._crawler.stats._stats['start_time'])
+	pt.finish_time = spider._crawler.stats._stats['finish_time']
+	pt.finish_reason = spider._crawler.stats._stats['finish_reason']
+	pt.save()
+        #spider.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`")
         spider.log("##~##~##~##~##~##~##~ closed spider %s" % spider.name)
-        spider.log("Spider Start Time: " + unicode(spider._crawler.stats._stats['start_time']))
-        spider.log("Spider Stop Time: " + unicode(spider._crawler.stats._stats['finish_time']))
+        #spider.log("Spider Start Time: " + unicode(spider._crawler.stats._stats['start_time']))
+        #spider.log("Spider Stop Time: " + unicode(spider._crawler.stats._stats['finish_time']))
+        #spider.log("Spider Finish Reason: "  + unicode(spider._crawler.stats._stats['finish_reason']))
+	#spider.log("Spider stuffs: " + unicode(spider.pt))
 	#elapsed_time = timedelta(spider._crawler.stats._stats['finish_time'] - spider._crawler.stats._stats['start_time'])
 	#spider.log("Elapsed Time: " + unicode(elapsed_time)
-        spider.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`")
+        #spider.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`")
 
 
     #def item_scraped(self, item, spider):

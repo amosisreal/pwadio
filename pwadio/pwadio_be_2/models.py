@@ -123,7 +123,7 @@ class ProcessingTime(models.Model):
     finish_reason = models.CharField(max_length='200')
 
     def __unicode__(self):
-        return self.start_time
+        return unicode(self.start_time)
 
 class RunningPlaylist(models.Model):
     processing_time = models.ForeignKey(ProcessingTime)
