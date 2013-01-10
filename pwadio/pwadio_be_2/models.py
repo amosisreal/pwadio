@@ -84,13 +84,13 @@ class Track(models.Model):
 
 class MusicServices_Artist_Lookup(models.Model):
     date_added = models.DateTimeField('Date Added')
-    artist = models.ForeignKey(Artist, related_name='+')
+    artist = models.ForeignKey(Artist, related_name='+', unique=True)
     music_service = models.ForeignKey(MusicServices, related_name='+')
     music_service_object_id_from_web = models.CharField(max_length=200)
 
 class MusicServices_Track_Lookup(models.Model):
     date_added = models.DateTimeField('Date Added')
-    track = models.ForeignKey(Track, related_name='+')
+    track = models.ForeignKey(Track, related_name='+', unique=True)
     music_service = models.ForeignKey(MusicServices, related_name='+')
     music_service_object_id_from_web = models.CharField(max_length=200)
 
