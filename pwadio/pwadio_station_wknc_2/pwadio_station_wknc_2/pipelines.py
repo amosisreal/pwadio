@@ -5,18 +5,14 @@
 import sys
 import datetime
 from datetime import date, timedelta
-import MySQLdb
-import hashlib
-import logging
-from scrapy.log import ScrapyFileLogObserver
 from scrapy.exceptions import DropItem
 from scrapy.http import Request
-
+from scrapy import log
 from pwadio_be_2.models import RunningPlaylist, RadioStation, ItunesTrackInfo, Artist, Track, ProcessingTime, Album, MusicServices, MusicServices_Artist_Lookup, MusicServices_Track_Lookup
 import itunes
 
 class PwadioStationWknc2Pipeline(object):
-    print "!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~"
+    log.msg("!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~", level=log.INFO)
 	
     def __init__(self):
 	# Get last date_added in db.
@@ -25,14 +21,14 @@ class PwadioStationWknc2Pipeline(object):
 	    if last_added.date_added is not None:
 	        self.last_date_in_db = last_added.date_added
 	    else:
-		self.last_date_in_db = datetime.datetime.now() - timedelta(days=365)
+	        self.last_date_in_db = datetime.datetime.now() - timedelta(days=365)
 	except MySQLdb.Error, e:
-	    print "exception found"
-	    print "Error %d: %s" % (e.args[0], e.args[1])
+	    log.msg("Exception found", level=log.ERROR)
+	    log.msg("Error %d: %s" % (e.args[0], e.args[1]), level=log.ERROR)
 
     def process_item(self, item, spider):
         if(item['true_date'] > self.last_date_in_db):
-	    print "true_date is is more recent than last_date_in_db, add it to db"
+	    log.msg("true_date is is more recent than last_date_in_db, add it to db", level=log.INFO)
             item['processing_time'].number_of_tracks_added_this_batch += 1
 	    item['processing_time'].save()	
 	    # Okay, now we have a new track, let's get the itunes info based on
@@ -40,62 +36,62 @@ class PwadioStationWknc2Pipeline(object):
             ### New flow here
             # Compare item artist_name_text to artist.name - if exists do something, if not add it.
             try:
-		print "~~~~~~~~~~~~~~~~~~~~~" + item['artist_name_text']+ "~~~~~~~~~~~~~~~~~~~~~~"
-                check_for_artist = Artist.objects.get(name__iexact=""+item['artist_name_text']+"")
-		print "#~#~#~#~#~#~#" + check_for_artist.name + "#~#~#~#~#~#~#~#~#"
+		log.msg("Artist from radio station: [" + item['artist_name_text']+ "].", level=log.INFO)
+        	check_for_artist = Artist.objects.get(name__iexact=""+item['artist_name_text']+"")
+		log.msg("Checking local artist table by name: [" + check_for_artist.name + "].", level=log.INFO)
                 if check_for_artist:
                     item['artist'] = check_for_artist
-		    print "<><><><><><><><><><> set artist to existing artist"
+	  	    log.msg("Artist exists in table, setting current artist to existing artist from table.", level=log.INFO)
                 else:
                     #add_artist = Artist.objects.create(name=item['artist_name_text'])
                     #item['artist'] = add_artist 
-		    print "><><><><><><><><><><><><><><> strange race condition here."	
+		    log.msg("<><><><><><><><><><><><><><><> strange race condition here.", level=log.WARNING)	
             except:
                 #print "Error %d: %s" % (e.args[0], e.args[1])
 		try:
 		    add_artist = Artist.objects.create(name=item['artist_name_text'], date_added=item['true_date'])
                     item['artist'] = add_artist 
+		    log.msg("Artist doesn't exist in table, creating new artist and setting current artist to new artist.", level=log.INFO)	
 		except:
-	        	print "><><><><><><><><><><><><><><><> something failed with the artist thing, setting to default."
-	                #print "Error %d: %s" % (e.args[0], e.args[1])
-	                item['artist'] = Artist.objects.get(pk=1)
+	            log.msg("Something failed with grabbing or creating an artist, setting to default artist.", level=log.ERROR)
+	            item['artist'] = Artist.objects.get(pk=1)
             # Compare item track_name_text to track.name - if exists do something, if not, add it.
             try:
-                print "~~~~~~~~~~~~~~~~~~~~~" + item['track_name_text']+ "~~~~~~~~~~~~~~~~~~~~~~"
+                log.msg("Track from radio station: [" + item['track_name_text']+ "].", level=log.INFO)
                 check_for_track = Track.objects.get(name =""+item['track_name_text']+"")
-                print "#~#~#~#~#~#~#" + check_for_artist.name + "#~#~#~#~#~#~#~#~#"
+                log.msg("Checking local track table for track by name: [" + check_for_track.name + "].", level=log.INFO)
                 if check_for_artist:
                     item['track'] = check_for_track
-                    print "<><><><><><><><><><> set track to existing track"
+                    log.msg("Track exists in table, setting current track to existing track from table.",level=log.INFO )
                 else:
-                    print "><><><><><><><><><><><><><><> strange race condition here."
-	            #print "Error %d: %s" % (e.args[0], e.args[1])
-            except:
+                    log.msg("><><><><><><><><><><><><><><> strange race condition here.", level=log.INFO)
+	    except:
                 try:
                     add_track = Track.objects.create(name=item['track_name_text'], date_added=item['true_date'], artist=item['artist'])
                     item['track'] = add_track
+		    log.msg("Track doesn't exist in table, creating new track and setting current track to new track.", level=log.INFO)
                 except:
-                    print "><><><><><><><><><><><><><><><> something failed with the track thing, setting to default."
-		    #print "Error %d: %s" % (e.args[0], e.args[1])
-                    item['track'] = Track.objects.get(pk=1)
+                    log.msg("Something failed with grabbing or creating a track, setting to default track.", level=log.WARNING)
+		    item['track'] = Track.objects.get(pk=1)
           
             # Gather iTunes track info, compare to db, add it if it doesn't exist.
 	    try:
 		ms = MusicServices.objects.get(pk=1)
 	    except: 	    
-		print "unable to instantiate MusicService."
+		log.msg("Unable to instantiate MusicService.", level=log.WARNING)
 	    # Okay, now we have a new track, let's get the itunes info based on
 	    # artist and track name.
 	    try:			
 		iTunes_track = itunes.search(query="" + item['artist_name_text'] + " " + item['track_name_text'] + "", media='music')
 	    except:
 		iTunes_track = None	
+		log.msg("Unable to gather data from iTunes.", level=log.WARNING)
 	    # please be advised, this is a nasty race condition.
 	    if iTunes_track:
-		print iTunes_track[0].get_name()
-		print iTunes_track[0].get_artist()
-		print iTunes_track[0].get_id()
-		print iTunes_track[0].get_artist().get_id()
+		log.msg("" + "Track name: " + iTunes_track[0].get_name() + " | iTunes Track ID: " + unicode(iTunes_track[0].get_id()) + " | Artist name: " + iTunes_track[0].get_artist().get_name() + " | iTunes Artist ID: " + unicode(iTunes_track[0].get_artist().get_id()) + " ", level=log.INFO)
+		#print iTunes_track[0].get_artist()
+		#print iTunes_track[0].get_id()
+		#print iTunes_track[0].get_artist().get_id()
 	        # While we have the itunes song, check the db for its existence, and if not there, just add it.  
 	    	# This is where we get all the url and image info for display
 	
@@ -103,11 +99,11 @@ class PwadioStationWknc2Pipeline(object):
 		    check_track = ItunesTrackInfo.objects.get(track_id=item['track'])
 	        except:
 		    check_track = None
-		    print check_track
+		    log.msg("check_track object: " + unicode(check_track) + "", level=log.INFO)
 	    	if check_track:
-		    print "%s already exists in local iTunes table.  Skip it." % (item['track'])
+		    log.msg("%s already exists in local iTunes table.  Skip it." % (item['track']), level=log.INFO)
 	        else:
-		    print "%s is not in local iTunes Table, add it." % (item['track'])
+		    log.msg("%s is not in local iTunes Table, add it." % (item['track']), level=log.INFO)
 		    found_this_track = ItunesTrackInfo()
 		    found_this_track.date_added = item['true_date']
 		    found_this_track.wrapper_type = iTunes_track[0].type
@@ -150,25 +146,25 @@ class PwadioStationWknc2Pipeline(object):
 		    # found_this_track.short_description = iTunes_track[0].get_description()
 		    # found_this_track.long_description = iTunes_track[0].get_description()
 		    found_this_track.save()
-		    # End of long comment '''
-		    # if no search result, set artist and track to 0.
-    	        try:
+		try:
 	            a_msl = MusicServices_Artist_Lookup.objects.create(date_added=item['processing_time'].start_time, artist=item['artist'], music_service=ms, music_service_object_id_from_web=found_this_track.artist_id)
-	        except Exception as e:
-		    print "unable to assign artist to MSAL."
-		    print e
+	            log.msg("Created a new Artist Lookup", level=log.INFO)
+		except Exception as e:
+		    log.msg("Unable to assign artist to MusicServiceLookupTable.", level=log.ERROR)
+		    log.msg("" + e + "", level=log.ERROR)
 
 	        try:
 		    t_msl = MusicServices_Track_Lookup.objects.create(date_added=item['processing_time'].start_time, track=item['track'], music_service=ms, music_service_object_id_from_web=found_this_track.track_id)
+		    log.msg("Created a new Track Lookup", level=log.INFO)
 	        except:
-		    print "unable to assign track to MSTL."
-     
+		    log.msg("Unable to assign Track to MusicServiceLookupTable.", level=log.ERROR)
+                    log.msg("" + e + "", level=log.ERROR)
             try:
 	        item.save()
 	    except MySQLdb.Error, e:
-	        print "exception found"
-	        print "Error %d: %s" % (e.args[0], e.args[1])
+	        log.msg("Exception found", level=log.ERROR)
+	        log.msg("Error %d: %s" % (e.args[0], e.args[1]), level=log.ERROR)
     	else:
-	    print "bypass this one, it is older"
+	    log.msg("Bypass this song, it is older", level=log.INFO)
 	
     	return item
