@@ -74,60 +74,47 @@ class PwadioStationWknc2Pipeline(object):
                     log.msg("Something failed with grabbing or creating a TRACK, setting to default TRACK.", level=log.WARNING)
 		    item['track'] = Track.objects.get(pk=1)
           
-            # Gather iTunes track info, compare to db, add it if it doesn't exist.
+            # We now have a track and an artist object, let's see if we have seen it before anywhere.
+	    # Create the Music Service object.
 	    try:
 		ms = MusicServices.objects.get(pk=1)
 		log.msg("Created MUSICSERVICE [ms]." + ms.name + ". ", level=log.INFO)
 	    except: 	    
 		log.msg("Unable to instantiate MUSICSERVICE.", level=log.WARNING)
-	    # Okay, now we have a new track, let's get the itunes info based on
-	    # artist and track name.
+	    # Okay, we have the music service object.  Have we seen this track from iTunes before?
+	    # Look in the MusicService_Track_Lookup table for this track at iTunes.
 	    try:			
-		#iTunes_track = itunes.search(query="" + item['artist_name_text'] + " " + item['track_name_text'] + "", media='music')
-		#test_track = Track.objects.get(pk=1942)
-	        #check_track = MusicServices_Track_Lookup.objects.filter(track=test_track, music_service=ms)
     	        check_track = MusicServices_Track_Lookup.objects.filter(track=item['track'], music_service=ms)
 		log.msg("Checking to see if this TRACK already exists in local tables. ", level=log.INFO)
                 log.msg("item [" + item['track'].name + "]", level=log.DEBUG)
-		log.msg("You should see something about querycheck / checktrack here.", level=log.INFO)
 	    except:
 	        check_track = None
 		log.msg("TRACK relationship not found in local tables. : " + unicode(check_track) + "", level=log.INFO)
-		#iTunes_track = None	
-		#log.msg("Unable to gather data from iTunes.", level=log.WARNING)
-	        # please be advised, this is a nasty race condition.
+		
             if check_track:
-		#log.msg("Info from iTunes: Track name: " + iTunes_track[0].get_name() + " | iTunes Track ID: " + unicode(iTunes_track[0].get_id()) + " | Artist name: " + iTunes_track[0].get_artist().get_name() + " | iTunes Artist ID: " + unicode(iTunes_track[0].get_artist().get_id()) + " ", level=log.INFO)
-		#print iTunes_track[0].get_artist()
-		#print iTunes_track[0].get_id()
-		#print iTunes_track[0].get_artist().get_id()
-	        # While we have the itunes song, check the db for its existence, and if not there, just add it.  
-	    	# This is where we get all the url and image info for display
+		#  If there is a value for check_track, then we don't need to do anything except add the song/track to running_playlist
 		log.msg("The track relationship already exists, just save the item to running playlists.", level=log.INFO)
 		try:
                     log.msg("Item should be saved here.", level=log.INFO)
-                    #item.save()
+                    item.save()
                 except MySQLdb.Error, e:
                     log.msg("Exception found", level=log.ERROR)
                     log.msg("Error %d: %s" % (e.args[0], e.args[1]), level=log.ERROR)
-			
+	    # If there is no check_track, then we dont know anything about the relationship.
 	    else:
-		log.msg("The track relationship doesnt exist, create the track relationship.", level=log.INFO)
+		log.msg("The track relationship doesnt exist, create the track relationship.  See if iTunes has any information on it.", level=log.INFO)
 		log.msg("Get information from iTunes.", level=log.INFO)
 	       	try:
-		    #check_track = ItunesTrackInfo.objects.get(track_id=item['track'])
-		    #check_track = MusicServices_Track_Lookup.objects.filter(track=item['track'], music_service=ms)
-		    #log.msg("Checking to see if this TRACK already exists in local tables. ", level=log.INFO)
+		    # Grab the information from iTunes to marry to the track and the artist.
 	            iTunes_track = itunes.search(query="" + item['artist_name_text'] + " " + item['track_name_text'] + "", media='music')
 		    log.msg("Info from iTunes: Track name: " + iTunes_track[0].get_name() + " | iTunes Track ID: " + unicode(iTunes_track[0].get_id()) + " | Artist name: " + iTunes_track[0].get_artist().get_name() + " | iTunes Artist ID: " + unicode(iTunes_track[0].get_artist().get_id()) + " ", level=log.INFO)
      	        except:
-		    #check_track = None
-		    #log.msg("TRACK not found in local tables. : " + unicode(check_track) + "", level=log.INFO)
+		    # Couldn't get anything from iTunes.
 	    	    iTunes_track = None	
 		    log.msg("Unable to gather data from iTunes.", level=log.WARNING)
 
 	        if iTunes_track:
-		    log.msg("%i is not in local iTunes Table, add it." % (iTunes_track[0].get_id()), level=log.INFO)
+		    log.msg("Grabbed track_id [ %i ] from iTunes, let's do some work with it." % (iTunes_track[0].get_id()), level=log.INFO)
 		    found_this_track = ItunesTrackInfo()
 		    found_this_track.date_added = item['true_date']
 		    found_this_track.wrapper_type = iTunes_track[0].type
@@ -169,38 +156,52 @@ class PwadioStationWknc2Pipeline(object):
 		    found_this_track.content_advisory_rating = ''
 		    # found_this_track.short_description = iTunes_track[0].get_description()
 		    # found_this_track.long_description = iTunes_track[0].get_description()
-		    found_this_track.save()
-		
-		    try:
-		        check_a_msl = MusicServices_Artist_Lookup.objects.filter(artist=item['artist'], music_service_object_id_from_web=found_this_track.artist_id)
-		        log.msg("ARTIST relationship exists in table, skipping.", level=log.INFO)
-		    except:
-		       check_a_msl = None
-                       log.msg("Setting ARTIST relationship to none.", level=log.WARNING) 
-		    if not check_a_msl:
+		    if found_this_track.track_id:
+			try:
+			    check_local_iTunes = ItunesTrackInfo.objects.get(track_id=found_this_track.track_id)
+			    log.msg("Checking if this track_id already exists in local iTunes table.", level=log.INFO)	
+			except:
+			    check_local_iTunes = None
+			    log.msg("Track_id doesn't exist in local iTunes table.", level=log.INFO)	
+			
+		    if check_local_iTunes:
+		    	log.msg("Track_id exists in local itunes table, skipping.", level=log.INFO)
+		    else:
+			log.msg("Track_id doesn't exist, saving to database.", level=log.INFO)
+			found_this_track.save()
+			# Now that we have iTunes info, create the relationships to ARTIST and TRACK.
 		        try:
-		            a_msl = MusicServices_Artist_Lookup.objects.create(date_added=datetime.datetime.now(), artist=item['artist'], music_service=ms, music_service_object_id_from_web=found_this_track.artist_id)
-	                    log.msg("Created a new ARTIST lookup relationship", level=log.INFO)
+		            check_a_msl = MusicServices_Artist_Lookup.objects.filter(artist=item['artist'], music_service_object_id_from_web=found_this_track.artist_id)
+		            log.msg("ARTIST relationship exists in table, skipping.", level=log.INFO)
+		        except:
+		            check_a_msl = None
+                            log.msg("Setting ARTIST relationship to none.", level=log.WARNING) 
+		        if not check_a_msl:
+		            try:
+		                a_msl = MusicServices_Artist_Lookup.objects.create(date_added=datetime.datetime.now(), artist=item['artist'], music_service=ms, music_service_object_id_from_web=found_this_track.artist_id)
+	                        log.msg("Created a new ARTIST lookup relationship", level=log.INFO)
+		            except Exception as e:
+		                log.msg("Unable to assign ARTIST relationship to MusicServiceLookupTable.", level=log.ERROR)
+		                log.msg( e, level=log.ERROR)
 
-		        except Exception as e:
-		            log.msg("Unable to assign ARTIST relationship to MusicServiceLookupTable.", level=log.ERROR)
-		            log.msg( e, level=log.ERROR)
-		    try:
-		        check_t_msl = MusicServices_Track_Lookup.objects.filter(track=item['track'], music_service_object_id_from_web=found_this_track.track_id)
-                        log.msg("TRACK relationship exists in table, skipping.", level=log.INFO)
-		    except:
-			check_t_msl = None
-			log.msg("Setting TRACK relationship to none.", level=log.WARNING)
-		    if not check_t_msl:
-	                try:
-		            t_msl = MusicServices_Track_Lookup.objects.create(date_added=item['processing_time'].start_time, track=item['track'], music_service=ms, music_service_object_id_from_web=found_this_track.track_id)
-		            log.msg("Created a new TRACK lookup relationship", level=log.INFO)
-	                except:
-		            log.msg("Unable to assign TRACK relationship to MusicServiceLookupTable.", level=log.ERROR)
-                            log.msg( e, level=log.ERROR)
+		        try:
+		            check_t_msl = MusicServices_Track_Lookup.objects.filter(track=item['track'], music_service_object_id_from_web=found_this_track.track_id)
+                            log.msg("TRACK relationship exists in table, skipping.", level=log.INFO)
+		        except:
+			    check_t_msl = None
+			    log.msg("Setting TRACK relationship to none.", level=log.WARNING)
+		        if not check_t_msl:
+	                    try:
+		                t_msl = MusicServices_Track_Lookup.objects.create(date_added=item['processing_time'].start_time, track=item['track'], music_service=ms, music_service_object_id_from_web=found_this_track.track_id)
+		                log.msg("Created a new TRACK lookup relationship", level=log.INFO)
+	                    except:
+			        log.msg("Unable to assign TRACK relationship to MusicServiceLookupTable.", level=log.ERROR)
+                                log.msg( e, level=log.ERROR)
+
                 try:
 	            log.msg("Item should be saved here.", level=log.INFO)
-		    #item.save()
+		    item.save()
+		    log.msg("Looks like save was successful!", level=log.INFO)
 	        except MySQLdb.Error, e:
 	            log.msg("Exception found", level=log.ERROR)
 	            log.msg("Error %d: %s" % (e.args[0], e.args[1]), level=log.ERROR)
