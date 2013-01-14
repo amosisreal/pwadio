@@ -31,7 +31,7 @@ class LogSpiderStats(object):
 	pt.finish_reason = spider._crawler.stats._stats['finish_reason']
 	pt.save()
         spider.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`", level=log.INFO)
-        spider.log("##~##~##~##~##~##~##~ closed spider %s" % spider.name, level=log.INFO)
+        #spider.log("##~##~##~##~##~##~##~ closed spider %s" % spider.name, level=log.INFO)
         spider.log("Spider Start Time: " + unicode(spider._crawler.stats._stats['start_time']), level=log.INFO)
         spider.log("Spider Stop Time: " + unicode(spider._crawler.stats._stats['finish_time']), level=log.INFO)
         spider.log("Spider Finish Reason: "  + unicode(spider._crawler.stats._stats['finish_reason']), level=log.INFO)

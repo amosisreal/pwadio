@@ -172,7 +172,7 @@ class PwadioStationWknc2Pipeline(object):
 			# Now that we have iTunes info, create the relationships to ARTIST and TRACK.
 		        try:
 		            check_a_msl = MusicServices_Artist_Lookup.objects.filter(artist=item['artist'], music_service_object_id_from_web=found_this_track.artist_id)
-		            log.msg("ARTIST relationship exists in table, skipping.", level=log.INFO)
+		            #log.msg("ARTIST relationship exists in table, skipping.", level=log.INFO)
 		        except:
 		            check_a_msl = None
                             log.msg("Setting ARTIST relationship to none.", level=log.WARNING) 
@@ -186,7 +186,7 @@ class PwadioStationWknc2Pipeline(object):
 
 		        try:
 		            check_t_msl = MusicServices_Track_Lookup.objects.filter(track=item['track'], music_service_object_id_from_web=found_this_track.track_id)
-                            log.msg("TRACK relationship exists in table, skipping.", level=log.INFO)
+                            #log.msg("TRACK relationship exists in table, skipping.", level=log.INFO)
 		        except:
 			    check_t_msl = None
 			    log.msg("Setting TRACK relationship to none.", level=log.WARNING)
