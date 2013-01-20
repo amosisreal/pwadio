@@ -1,0 +1,59 @@
+scrapy crawl myspider --nolog
+
+scrapy crawl myspider --logfile=myspider.log
+
+select * from pwadio_running_playlist order by date_added desc limit 40;
+select count(date_added) from pwadio_running_playlist;
+
+use scrapy_wknc
+use pwadio_db
+
+truncate table pwadio_running_playlist;
+
+cp -R dev_Python/ ~/Dropbox/Ubuntu_Dev/
+
+
+tail -f /var/log/syslog
+tail -f testCron.txt
+tail -f scrapywebservicelog.log 
+
+
+db notes.
+
+delete from pwadio_running_playlist where id > 203981
+mysqldump -u root -ppassword pwadio_2013 > pwadio_2013$(date +%Y-%m-%d-%H.%M.%S).sql
+
+API Notes
+http://127.0.0.1:8000/pwadio/api/v1/RunningPlaylist/?format=json
+http://127.0.0.1:8000/pwadio/api/v1/RadioStation/?format=json
+http://127.0.0.1:8000/pwadio/api/v1/iTunesTracks/?format=json
+
+
+INSERT INTO `pwadio_be_radiostation` VALUES (1,'2011-03-12 23:59:22','wknc','www.wknc.org','www.wknc.org/playlist','FM','88.1','R    aleigh','NC','','9198600881','','');
+
+
+source /home/amosbrown/pydev/pwadio_env/bin/activate && cd /home/amosbrown/pydev/pwadio/pwadio_station_wknc/pwadio_station_wknc && /bin/echo $(date) >> /home/amosbrown/testCron_cmd.txt && pwd >> /home/amosbrown/testCron_cmd.txt && scrapy crawl pwadio_station_wknc >> /home/amosbrown/testCron_cmd.txt
+
+scrapy log info.
+
+3795 2013-01-01 21:26:59-0500 [pwadio_station_wknc] INFO: Dumping Scrapy stats:
+3796     {'downloader/request_bytes': 445,
+3797      'downloader/request_count': 2,
+3798      'downloader/request_method_count/GET': 2,
+3799      'downloader/response_bytes': 10540,
+3800      'downloader/response_count': 2,
+3801      'downloader/response_status_count/200': 1,
+3802      'downloader/response_status_count/301': 1,
+3803      'finish_reason': 'finished',
+3804      'finish_time': datetime.datetime(2013, 1, 2, 2, 26, 59, 68090),
+3805      'item_scraped_count': 315,
+3806      'log_count/DEBUG': 640,
+3807      'log_count/INFO': 4,
+3808      'response_received_count': 1,
+3809      'scheduler/dequeued': 2,
+3810      'scheduler/dequeued/memory': 2,
+3811      'scheduler/enqueued': 2,
+3812      'scheduler/enqueued/memory': 2,
+3813      'start_time': datetime.datetime(2013, 1, 2, 2, 26, 56, 982726)}
+3814 2013-01-01 21:26:59-0500 [pwadio_station_wknc] INFO: Spider closed (finished)
+

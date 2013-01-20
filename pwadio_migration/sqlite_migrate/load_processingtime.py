@@ -1,0 +1,76 @@
+import imp, os
+from django.core.management import setup_environ
+path = '/home/amosbrown/pydev/pwadio/pwadio'
+f, filename, desc = imp.find_module('settings', [path])
+project = imp.load_module('settings', f, filename, desc)
+setup_environ(project)
+
+# Add django project to sys.path
+import sys
+sys.path.append(os.path.abspath(os.path.join(path, os.path.pardir)))
+from django.db import models
+import logging
+from time import strftime
+from datetime import datetime, time, date
+
+import sqlite3 as lite
+
+from pwadio_be_2.models import RunningPlaylist, RadioStation, ItunesTrackInfo, Artist, Track, ProcessingTime, Album, MusicServices, MusicServices_Artist_Lookup, MusicServices_Track_Lookup
+
+sqlite_db = '/home/amosbrown/pydev/pwadio_migration/pwadio.db3'
+
+rows_added = 0
+
+logger = logging.getLogger('pwadio_importer')
+hdlr = logging.FileHandler('/home/amosbrown/pydev/pwadio_migration/logs/processingtime_importer.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+logger.addHandler(hdlr)
+logger.setLevel(logging.DEBUG)
+
+table_label = "PROCESSINGTIME"
+
+logger.info("Starting %s importer from sqlite3 to mySQL. ---------------------------------------------------------" % table_label)
+
+#connect to sqlite3
+con = lite.connect(sqlite_db)
+
+#pull rows from itunes table
+with con:
+    cur = con.cursor()
+    #cur.execute('SELECT * FROM processingTime order by pt_DateAdded;')
+
+    cur.execute('SELECT * FROM processingTime order by pt_DateAdded limit 1000;')
+
+    rows = cur.fetchall()
+    for row in rows:
+	rs = RadioStation.objects.get(pk=1)
+        try:
+            check_pt = ProcessingTime.objects.get(date_added=datetime.utcfromtimestamp(float(row[6])))
+        except:
+	    check_pt = None
+        if not check_pt:
+	    calculated_finish_time = datetime.utcfromtimestamp(float(row[6])) # leaving this out for now. + datetime.timedelta(seconds=row['total_elapsed_time'])
+            logger.warning("[check_pt]: is None, add this row to the new database - date_added: " + str(datetime.utcfromtimestamp(float(row[6]))))
+	    pt = ProcessingTime.objects.create(
+		date_added=datetime.utcfromtimestamp(float(row[6])), 
+		station_ID_id = 1, 
+		download_site_time=row[2], 
+		processing_time=row[3], 
+		total_elapsed_time=row[4], 
+		number_of_tracks_added_this_batch=row[5], 
+		start_time=datetime.utcfromtimestamp(float(row[6])), 
+		finish_time=calculated_finish_time, 
+		finish_reason='Finished', )
+	    rows_added += 1
+        else:
+            logger.warning("[check_pt] already exists in database - date_added: " + str(datetime.utcfromtimestamp(float(row[6]))))
+
+logger.info("Added [ %i ] new rows to %s" % (rows_added, table_label))
+cur.close()
+logger.info("Closing cursor.")
+con.close()
+logger.info("Closing sqlite3 connection.")
+
+logger.info("Finished %s importer from sqlite3 to mySQL. ---------------------------------------------------------" % table_label)
+

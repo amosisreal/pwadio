@@ -1,0 +1,12 @@
+Migrating from php pwadio to python pwadio.
+
+1) get django working at site5 dammit.
+2) use current pwadio sqlite3 db at site5 - it is still current.
+3) write converters from sqlite3 to django models
+	itunes table
+	processing time table
+	running playlist
+		- create artists / tracks on the fly
+4) write parser that will traverse running playlist, then build music service lookups on the fly.
+
+ID and cleanup unused files / data cause this is getting messy.

@@ -129,7 +129,7 @@ class RunningPlaylist(models.Model):
     processing_time = models.ForeignKey(ProcessingTime)
     Unique_ID = models.CharField(max_length=200)
     date_added = models.DateTimeField('Date Added')
-    time_played = models.DateTimeField('Date Added')
+    time_played = models.DateTimeField('Time Played')
     radio_station = models.ForeignKey(RadioStation)
     artist_name_text = models.CharField(max_length=200)
     track_name_text = models.CharField(max_length=200)
