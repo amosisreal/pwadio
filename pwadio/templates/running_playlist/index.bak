@@ -1,0 +1,9 @@
+{% if runningplaylist %}
+    <ul>
+    {% for rp in runningplaylist %}
+        <li><a href="pwadio/{{ rp.id }}/">{{ rp.artist_name_text }}</a> | {{rp.track_name_text }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No tracks are available.</p>
+{% endif %}

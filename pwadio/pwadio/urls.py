@@ -14,5 +14,5 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^pwadio/', include('pwadio_be.urls')),
+    url(r'^pwadio/', include('pwadio_be_2.urls')),
 )

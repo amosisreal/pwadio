@@ -50,7 +50,7 @@ with con:
 	    pt = ProcessingTime.objects.get(date_added=datetime.utcfromtimestamp(float(row[2])))
         except:
 	    logger.warning("Processing time set to default.")
-	    pt = ProcessingTime.objects.get(pk=9262)   
+	    pt = ProcessingTime.objects.get(pk=1)   
         rs = RadioStation.objects.get(pk=1)
         ra = Artist.objects.get(pk=1)
         rt = Track.objects.get(pk=1)

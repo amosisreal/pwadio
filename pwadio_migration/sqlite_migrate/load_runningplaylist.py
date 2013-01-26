@@ -106,8 +106,8 @@ with con:
 			date_added=datetime.utcfromtimestamp(float(row[2])), 
 			time_played=datetime.utcfromtimestamp(float(row[3])), 
 			radio_station=rs, 
-			artist_name_text=row[4], 
-			track_name_text=row[5], 
+			artist_name_text=row[5], 
+			track_name_text=row[6], 
 			artist=ra, 
 			track=rt)
 	        rows_added += 1

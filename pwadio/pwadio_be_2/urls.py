@@ -2,6 +2,7 @@ from django.conf.urls.defaults import *
 from tastypie.api import Api
 from pwadio_be_2 import views
 from pwadio_be_2.api import RunningPlaylistResource, UserResource, RadioStationResource, ProcessingTimeResource, ItunesTrackInfoResource
+from pwadio_be_2.models import RunningPlaylist, Artist, Track, ProcessingTime, ItunesTrackInfo
 
 v1_api = Api(api_name='v1')
 v1_api.register(UserResource())
@@ -18,7 +19,7 @@ user = UserResource()
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
-    url(r'^(?P<running_playlist_id>\d+)/$', views.detail, name='detail'), 
+    url(r'^(?P<id>\d+)/$', views.detail, name='detail'), 
 #    (r'^search/', include('haystack.urls')),
     (r'^api/', include(v1_api.urls))
 )

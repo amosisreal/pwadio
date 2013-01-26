@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %} Running Playlist {% endblock title %}
+{% block content %}
+{% if runningplaylist %}
+    <ul>
+    {% for rp in runningplaylist %}
+        <li><a href={% url detail rp.id %}>{{ rp.artist_name_text }}</a> | {{rp.track_name_text }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No tracks are available.</p>
+{% endif %}
+{% endblock content %}
