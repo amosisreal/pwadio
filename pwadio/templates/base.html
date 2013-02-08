@@ -1,22 +1,47 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>pwadio - {% block title %} {% endblock %}</title>
-	</head>
-	<body>
-		<div id="header">pwadio</div>
-		<div id="nav">
-			<ul>
-				<li><a href="/">home</a></li>
+<head>
+<title>pwadio - {% block title %} {% endblock %}</title>
+<link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+</head>
+<body>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+<div class="container">
+    <div class="row-fluid">
+    	<div class="span10">
+			<h1>pwadio</h1>
+		</div>
+		<div class="span2"><br> <a href="/pwadio">Home</a> | <a href="/login">Login</a> | <a href="/about/">About</a>
+		</div>
+    </div> 
 
-				<li><a href="/about/">About</a></li>
-			</ul>
-		</div>
-		<div id="content">
-			<div id="primary">
-				{% block content %}{% endblock %}
-			</div>
-		</div>
+    <div class="navbar">
+	    <div class="navbar-inner">
+	        <div class="container">
+	            <ul class="nav">
+                    <li class="divider-vertical"><a href="/pwadio/">Running Playlist</a></li>
+                    <li class="divider-vertical"><a href="/pwadio/artists">Artists</a></li>
+                    <li class="divider-vertical"><a href="/pwadio/tracks">Tracks</a></li>
+                    <li class="divider-vertical"><a href="/pwadio/genre">Genres</a></li>
+                    <li class="divider-vertical"><a href="/pwadio/radiostation#">Stations</a></li>
+                    <form class="navbar-search pull-right">
+                        <input type="text" class="search-query" placeholder="Artist, Track, or Station">
+                    </form>
+                </ul>
+            </div>    
+        </div>    
+    </div>
+    
+    <div class="row">
+      	<div class="span2">
+        </div>
+        <div class="span10">
+				{% block content %}
+				{% endblock %}
+	    </div>
+	</div>
+</div>    
 	</body>
 </html>
 

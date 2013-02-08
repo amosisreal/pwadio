@@ -21,5 +21,9 @@ urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
     url(r'^(?P<id>\d+)/$', views.detail, name='detail'), 
 #    (r'^search/', include('haystack.urls')),
-    (r'^api/', include(v1_api.urls))
+    (r'^api/', include(v1_api.urls)),
+    url(r'^tracks/$', views.tracklist, name='tracklist'),
+    url(r'^tracks/(?P<id>\d+)/$', views.trackdetail, name='trackdetail'),
+    url(r'^artists/$', views.artistlist, name='artistlist'),
+    url(r'^artists/(?P<id>\d+)/$', views.artistdetail, name='artistdetail'),
 )

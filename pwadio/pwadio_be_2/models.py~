@@ -38,7 +38,7 @@ class ItunesTrackInfo(models.Model):
     long_description = models.CharField(max_length=400)
 
     def __unicode__(self):
-        return self.artist_name
+        return self.track_name
 
 class MusicServices(models.Model):
     date_added = models.DateTimeField('Date Added')
@@ -74,13 +74,26 @@ class Album(models.Model):
 
 class Track(models.Model):
     date_added = models.DateTimeField('Date Added')
-    #year_released = models.DateTimeField('Year Released')
     name = models.CharField(max_length=200)
-    artist = models.ForeignKey(Artist)
-    #album = models.ForeignKey(Album)
+    artist = models.ForeignKey(Artist, related_name="t_artist")
 
     def __unicode__(self):
         return self.name
+
+    @classmethod
+    def get_itunes_detail(self):
+ 	try: 
+	    ml = self.mstl_track.get(track.id=self.id)	
+	except:
+	    ml = None
+	if ml:
+	    try:
+   	        it = ItunesTrackInfo.objects.get(track_id=ml.music_service_object_id_from_web)	
+	    except:
+	        it = None
+	else:
+	    it = None
+	return it
 
 class MusicServices_Artist_Lookup(models.Model):
     date_added = models.DateTimeField('Date Added')
@@ -88,11 +101,17 @@ class MusicServices_Artist_Lookup(models.Model):
     music_service = models.ForeignKey(MusicServices, related_name='+')
     music_service_object_id_from_web = models.CharField(max_length=200)
 
+    def __unicode__(self):
+        return self.music_service_object_id_from_web
+
 class MusicServices_Track_Lookup(models.Model):
     date_added = models.DateTimeField('Date Added')
-    track = models.ForeignKey(Track, related_name='+')
+    track = models.ForeignKey(Track, related_name='mstl_track')
     music_service = models.ForeignKey(MusicServices, related_name='+')
     music_service_object_id_from_web = models.CharField(max_length=200)
+    
+    def __unicode__(self):
+        return self.music_service_object_id_from_web
 
 class RadioStation(models.Model):
     date_added = models.DateTimeField('Date Added')
@@ -129,17 +148,29 @@ class RunningPlaylist(models.Model):
     processing_time = models.ForeignKey(ProcessingTime)
     Unique_ID = models.CharField(max_length=200)
     date_added = models.DateTimeField('Date Added')
-    time_played = models.DateTimeField('Date Added')
+    time_played = models.DateTimeField('Time Played')
     radio_station = models.ForeignKey(RadioStation)
     artist_name_text = models.CharField(max_length=200)
     track_name_text = models.CharField(max_length=200)
-    #artist = models.CharField(max_length=200)
-    artist = models.ForeignKey(Artist)
-    # change this to ForeignKey to Artist Table.
-    #track = models.CharField(max_length=200, default=0)
-    track = models.ForeignKey(Track)
-    # change this to ForeignKey to Track Table.
+    artist = models.ForeignKey(Artist, related_name="rp_artist")
+    track = models.ForeignKey(Track, related_name="rp_track")
 
     def __unicode__(self):
         return self.artist_name_text
+
+    def get_itunes_detail(self):
+	t = self.track
+	try: 
+	    ml = t.mstl_track.get(track=t)	
+	except:
+	    ml = None
+	if ml:
+	    try:
+		it = ItunesTrackInfo.objects.get(track_id=ml.music_service_object_id_from_web)	
+	    except:
+		it = None
+	else:
+	    it = None
+	return it
+
 
