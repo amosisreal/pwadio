@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>pwadio - {% block title %} {% endblock %}</title>
+<link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+</head>
+<body>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+<div class="container">
+    <div class="row-fluid">
+    	<div class="span10">
+			<h1>pwadio</h1>
+		</div>
+		<div class="span2"><br> <a href="/pwadio">Home</a> | <a href="/login">Login</a> | <a href="/about/">About</a>
+		</div>
+    </div> 
+
+    <div class="navbar">
+	    <div class="navbar-inner">
+	        <div class="container">
+	            <ul class="nav">
+                    <li class="divider-vertical"><a href="/pwadio/">Running Playlist</a></li>
+                    <li class="divider-vertical"><a href="/pwadio/artists">Artists</a></li>
+                    <li class="divider-vertical"><a href="/pwadio/tracks">Tracks</a></li>
+                    <li class="divider-vertical"><a href="/pwadio/genre">Genres</a></li>
+                    <li class="divider-vertical"><a href="/pwadio/radiostation#">Stations</a></li>
+                    <form class="navbar-search pull-right">
+                        <input type="text" class="search-query" placeholder="Artist, Track, or Station">
+                    </form>
+                </ul>
+            </div>    
+        </div>    
+    </div>
+    
+    <div class="row">
+      	<div class="span2">
+		       	Lorem ipsum dolor sit amet, consectetur adipiscing elit. In ac neque felis. Donec auctor, tellus eget tempor sagittis, velit nibh mattis metus, quis cursus velit sem non felis. Sed ullamcorper tempus dignissim. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris sollicitudin ullamcorper nisi aliquet blandit. Aenean fringilla, ipsum sed posuere convallis, lacus felis rhoncus dolor, ut sollicitudin lectus dolor vel est. Aliquam id justo lacus, adipiscing scelerisque augue. Praesent in neque ligula, quis elementum tortor. Ut lorem sapien, sodales vitae aliquam in, auctor ac mauris. Nulla in nulla nunc, id aliquam enim. Nulla tempus consequat euismod.
+
+Quisque posuere ullamcorper justo, vitae dignissim felis mattis quis. Proin ut orci non augue feugiat suscipit. Sed ultricies condimentum odio, eget convallis erat auctor sed. Morbi ut pulvinar mauris. Duis molestie, diam in luctus semper, sem lacus posuere arcu, sit amet lobortis ligula nisi et diam. Integer sapien mi, consequat ut sodales eu, bibendum non orci. Pellentesque nulla justo, varius eget interdum ac, imperdiet eu tellus. Donec euismod tortor eget libero mattis consectetur. Proin sed dui posuere metus semper rutrum. Nulla facilisi. Quisque odio risus, vulputate eget pellentesque in, porttitor sed sem. Proin vestibulum suscipit mollis. Proin ut sapien augue, in dapibus metus. Nulla placerat malesuada ante.
+
+Aliquam nec lectus vitae justo facilisis faucibus eu ullamcorper leo. Vestibulum fermentum gravida vestibulum. Morbi sit amet lorem aliquam metus faucibus ultricies non sit amet nulla. Curabitur felis erat, accumsan eget eleifend nec, elementum in tellus. Quisque dapibus justo arcu, vel placerat arcu. Vivamus adipiscing dolor vitae eros fermentum pulvinar. Mauris pellentesque risus in purus egestas blandit. Quisque ultrices, augue ac pellentesque rhoncus, augue ante faucibus diam, et pharetra ante nibh id ipsum.
+
+Proin gravida luctus ante at varius. In at pretium leo. Proin aliquet eleifend fringilla. Proin fermentum rutrum sollicitudin. Aenean neque dui, facilisis ut dapibus quis, vehicula luctus velit. Duis blandit tristique sapien, sed venenatis erat ornare a. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec vel aliquet nunc. Nam hendrerit diam sit amet massa rutrum nec pretium lorem adipiscing.
+
+Suspendisse semper facilisis sapien, quis adipiscing nibh blandit et. Praesent diam arcu, eleifend nec venenatis tincidunt, pharetra at lectus. Suspendisse et risus fermentum enim pulvinar venenatis at et sem. Morbi tristique vulputate semper. Suspendisse eu leo ac lacus aliquam luctus. Morbi pellentesque metus et orci semper tempus. Vestibulum eu enim urna, sed porta nibh. Nulla rutrum commodo vehicula. Nullam sit amet urna libero. Suspendisse vulputate semper velit ut tempor. Aliquam erat volutpat.
+        </div>
+        <div class="span10">
+				{% block content %}
+				{% endblock %}
+	    </div>
+	</div>
+</div>    
+	</body>
+</html>
+

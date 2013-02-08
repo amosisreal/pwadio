@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %} Track Detail {% endblock title%}
+{% block content %}
+{% if artist %}
+    <ul class="thumbnails">
+    <br />
+           <li class="span7">
+            <div class="thumbnail">
+               <img src="/static/js/holder.js/300x200" alt="" >
+		    <a href="{% url artistdetail artist.id %}" > {{artist.name }} </a> added on {{ artist.date_added }} <br> <br/>
+		    {{ artist_tracks.count }} tracks by <a href="{% url artistdetail artist.id %}" > {{ artist.name }} </a><br/>
+			{% for tr in artist_tracks %}			
+				<a href="{% url trackdetail tr.id %}" > {{ tr.name }} </a> added on {{ tr.date_added }} </br>
+				iTunes ID not working {{ tr.mslt_track.music_service_object_id_from_web }} </br>
+		        {% endfor %}
+	    </div>
+        </li>
+   
+    </ul>
+{% else %}
+    <p>No artist are available.</p>
+{% endif %}
+
+{% endblock content %}

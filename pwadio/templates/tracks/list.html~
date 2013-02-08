@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %} Tracks {% endblock title %}
+{% block content %}
+{% if tracks %}
+<table class="table table-striped table-hover table-condensed">
+<caption>Tracks</caption>
+	<tbody>
+	<thead>
+		<td></td>
+		<td>Track</td>
+		<td>Artist</td>
+		<td>iTunes</td>
+	</thead>
+    {% for tr in tracks %}
+	<tr>
+		
+		<td><img src={{ tr.get_itunes_detail.artwork_URL_60 }} class="img-polaroid"></td>
+		<td><a href="{% url trackdetail tr.id %}" > {{ tr.name }} </a> </td>
+		<td><a href="{% url artistdetail tr.artist.id %}" > {{tr.artist.name }} </a></td>	
+		<td>iTunes</td>
+    </tr>	
+    {% endfor %}
+	</tbody>
+</table>
+{% else %}
+    <p>No tracks are available.</p>
+{% endif %}
+{% endblock content %}

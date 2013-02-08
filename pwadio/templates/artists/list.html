@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %} Artists {% endblock title %}
+{% block content %}
+{% if artists %}
+    <ul class="thumbnails">
+    <br />
+    {% for artist in artists %}
+        <li class="span7">
+            <div class="thumbnail">
+                <a href="{% url artistdetail artist.id %}" >
+                    <img src="/static/js/holder.js/300x200" alt="" >
+			{{ artist.name }} <br/>
+				
+                </a>
+            </div>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No artists are available.</p>
+{% endif %}
+{% endblock content %}

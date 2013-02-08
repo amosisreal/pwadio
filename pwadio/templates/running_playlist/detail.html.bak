@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %} Track Detail {% endblock title%}
+{% block content %}
+{% if tr %}
+    <ul class="thumbnails">
+    <br />
+           <li class="span7">
+            <div class="thumbnail">
+               <img src="/static/js/holder.js/300x200" alt="" >
+		    {{ tr.name }} added on {{ tr.date_added }} by {{tr.artist.name }} added on {{ tr.artist.date_added }}<br>
+	    </div>
+        </li>
+   
+    </ul>
+{% else %}
+    <p>No tracks are available.</p>
+{% endif %}
+
+{% endblock content %}

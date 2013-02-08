@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %} Track Detail {% endblock title%}
+{% block content %}
+{% if tr %}
+    <ul class="thumbnails">
+    <br />
+           <li class="span7">
+            <div class="thumbnail">
+
+		   <a href="{% url trackdetail tr.id %}" > {{ tr.name }} </a> by <a href="{% url artistdetail tr.artist.id %}" > {{tr.artist.name }} </a> <br/>
+			{% for i in tr_info %}			
+				| iTunes ID {{ i.music_service_object_id_from_web }} | </br>
+		        {% endfor %}
+	    </div>
+        </li>
+   
+    </ul>
+{% else %}
+    <p>No tracks are available.</p>
+{% endif %}
+
+{% endblock content %}
