@@ -13,8 +13,12 @@
 	</thead>
     {% for tr in tracks %}
 	<tr>
+		{% if tr.mstl_track.get %}
+			<td><img src={{ tr.mstl_track.get.get_itunes_detail.artwork_URL_60 }} class="img-polaroid"></td>
+		{% else %}
+			<td><img src="http://www.pwadio.com/img/question.png" class="img-polaroid"></td>
+		{% endif %}
 		
-		<td><img src={{ tr.get_itunes_detail.artwork_URL_60 }} class="img-polaroid"></td>
 		<td><a href="{% url trackdetail tr.id %}" > {{ tr.name }} </a> </td>
 		<td><a href="{% url artistdetail tr.artist.id %}" > {{tr.artist.name }} </a></td>	
 		<td>iTunes</td>

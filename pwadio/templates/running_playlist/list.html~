@@ -3,7 +3,7 @@
 {% block content %}
 {% if runningplaylist %}
 <table class="table table-striped table-hover table-condensed">
-<caption>Running Playlist</caption>
+<caption>Running Playlist from {{ }} stations.</caption>
 	<tbody>
 	<thead>
 		<td></td>
@@ -15,15 +15,16 @@
 	</thead>
     {% for rp in runningplaylist %}
 	<tr>
-		{% if rp.get_itunes_detail %}
-			<td><img src={{ rp.get_itunes_detail.artwork_URL_60 }} class="img-polaroid"></td>
-		{ % else %}
+		{% if rp.track.mstl_track.get.get_itunes_detail %}
+			<td><img src={{ rp.track.mstl_track.get.get_itunes_detail.artwork_URL_60 }} class="img-polaroid"></td>
+		{% else %}
 			<td><img src="http://www.pwadio.com/img/question.png" class="img-polaroid"></td>
 		{% endif %}
-		<td>{{ rp.radio_station.name }} </td>
+		<td><a href="{% url rsdetail rp.radio_station.id %}" > {{ rp.radio_station.name }} </a></td>
 		<td>	{{ rp.time_played|date:"m/d/y g:i A" }}</td>
-		<td><a href="{% url trackdetail rp.track.id %}" > {{ rp.track.name }} </a> </td>
-		<td><a href="{% url artistdetail rp.artist.id %}" > {{rp.artist.name }} </a></td>	
+		<td><a href="{% url trackdetail rp.track.id %}" > {{ rp.track.name }} </a> ({{rp.track.rp_track.count}}) </td>
+		<td><a href="{% url artistdetail rp.artist.id %}" > {{rp.artist.name }} </a> ({{rp.artist.rp_artist.count}}) </td>	
+
 		<td>iTunes</td>
     </tr>	
     {% endfor %}

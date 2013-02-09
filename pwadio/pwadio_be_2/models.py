@@ -62,6 +62,10 @@ class Artist(models.Model):
 
     def __unicode__(self):
         return self.name
+	
+    def last_time_played(self):
+        rp = RunningPlaylist.objects.filter(artist=self).order_by('-date_added')
+        return rp[0].date_added
 
 class Album(models.Model):
     date_added = models.DateTimeField('Date Added')
@@ -80,20 +84,13 @@ class Track(models.Model):
     def __unicode__(self):
         return self.name
 
-    @classmethod
-    def get_itunes_detail(self):
- 	try: 
-	    ml = self.mstl_track.get(track=self)	
-	except:
-	    ml = None
-	if ml:
-	    try:
-   	        it = ItunesTrackInfo.objects.get(track_id=ml.music_service_object_id_from_web)	
-	    except:
-	        it = None
-	else:
-	    it = None
-	return it
+    def last_time_played(self):
+        rp = RunningPlaylist.objects.filter(track=self).order_by('-date_added')
+        return rp[0].date_added
+	
+    def all_times_played(self):
+        rp = RunningPlaylist.objects.filter(track=self).order_by('-date_added')
+        return rp
 
 class MusicServices_Artist_Lookup(models.Model):
     date_added = models.DateTimeField('Date Added')
@@ -113,6 +110,14 @@ class MusicServices_Track_Lookup(models.Model):
     def __unicode__(self):
         return self.music_service_object_id_from_web
 
+    def get_itunes_detail(self):
+	mid = self.music_service_object_id_from_web
+        try:
+             it = ItunesTrackInfo.objects.get(track_id=mid)	
+        except:
+             it = None
+        return it
+
 class RadioStation(models.Model):
     date_added = models.DateTimeField('Date Added')
     name = models.CharField(max_length=200)
@@ -129,6 +134,15 @@ class RadioStation(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def get_running_playlist(self):
+        running_playlist = RunningPlaylist.objects.filter(radio_station=self).order_by('-date_added')[:50]
+        return running_playlist
+
+    def last_time_played(self):
+        rp = RunningPlaylist.objects.filter(radio_station=self).order_by('-date_added')
+        return rp[0].date_added
+
 
 class ProcessingTime(models.Model):
     station_ID = models.ForeignKey(RadioStation)
@@ -157,20 +171,4 @@ class RunningPlaylist(models.Model):
 
     def __unicode__(self):
         return self.artist_name_text
-
-    def get_itunes_detail(self):
-	t = self.track
-	try: 
-	    ml = t.mstl_track.get(track=t)	
-	except:
-	    ml = None
-	if ml:
-	    try:
-		it = ItunesTrackInfo.objects.get(track_id=ml.music_service_object_id_from_web)	
-	    except:
-		it = None
-	else:
-	    it = None
-	return it
-
 
