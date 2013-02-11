@@ -1,0 +1,6 @@
+
+<p>
+	{{ result.content_type }} >>> 
+    <a href="{% url artistdetail result.object.id %}">{{ result.object.name }}</a> <br/>
+	Date Added: {{ result.object.date_added }} 
+</p>

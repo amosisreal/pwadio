@@ -1,0 +1,12 @@
+
+{% if result.object.mstl_track.get %}
+	<td><img src={{ result.object.mstl_track.get.get_itunes_detail.artwork_URL_60 }} class="img-polaroid"></td>
+{% else %}
+	<td><img src="http://www.pwadio.com/img/question.png" class="img-polaroid"></td>
+{% endif %}
+	<td><a href="{% url trackdetail result.object.id %}" > {{ result.object.name }} </a> </td>
+	<td><a href="{% url artistdetail result.object.artist.id %}" > {{result.object.artist.name }} </a></td>	
+	<td>{{ result.object.rp_track.count }}</td>
+	<td>iTunes</td>
+
+
