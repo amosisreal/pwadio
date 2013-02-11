@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %} Radio Stations{% endblock title %}
+{% block content %}
+{% if object_list %}
+<table class="table table-striped table-hover table-condensed">
+<caption>{{ radiostations.count }} Radio Stations</caption>
+	<tbody>
+	<thead>
+		<td></td>
+		<td>Call Letters</td>
+		<td>Station</td>
+		<td>URL</td>
+		<td>Address</td>
+		<td>Request Line(s)</td>
+		<td>Date Added</td>
+		<td># Artists</td>
+		<td># Tracks</td>
+	</thead>
+    {% for rs in object_list %}
+	<tr>
+		<td></td>
+		<td><a href="{% url rsdetail rs.id %}" > {{rs.name}} </a></td>	
+		<td>{{rs.frequency}} {{ rs.am_fm_band }} </td>
+		<td><a href="http://{{rs.URL}}" > {{rs.URL}} </a></td>	
+		<td>{{ rs.city }}, {{rs.state }} {{ rs.zip }}</td>
+		<td>{{ rs.phone_1 }} <br/> {{ rs.phone_2 }}</td>
+		<td>{{ rs.date_added|date:"m/d/y g:i A" }}</td>
+		<td></td>
+		<td></td>	
+    </tr>	
+	<tr>
+		<td colspan=9>{{ rs.description }}</td>	
+	</tr>
+    {% endfor %}
+	</tbody>
+</table>
+
+{% else %}
+    <p>No artists are available.</p>
+{% endif %}
+{% endblock content %}

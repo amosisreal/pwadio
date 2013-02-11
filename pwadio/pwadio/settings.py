@@ -126,6 +126,8 @@ INSTALLED_APPS = (
      'pwadio_be',
      'pwadio_be_2',
      'tastypie',
+     'pure_pagination',
+     'haystack',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -156,3 +158,7 @@ LOGGING = {
         },
     }
 }
+HAYSTACK_SITECONF = 'pwadio.search_sites'
+HAYSTACK_SEARCH_ENGINE = 'simple'
+
+

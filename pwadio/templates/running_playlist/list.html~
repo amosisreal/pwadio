@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% block title %} Running Playlist {% endblock title %}
 {% block content %}
-{% if runningplaylist %}
+{% if object_list %}
+{% if is_paginated %}{% load paginator %}{% paginator 3 %}{% endif %}
 <table class="table table-striped table-hover table-condensed">
-<caption>Running Playlist from {{ }} stations.</caption>
+<caption>Running Playlist from {{ num_stations }} stations.</caption>
 	<tbody>
 	<thead>
 		<td></td>
@@ -13,7 +14,7 @@
 		<td>Artist</td>
 		<td>iTunes</td>
 	</thead>
-    {% for rp in runningplaylist %}
+    {% for rp in object_list %}
 	<tr>
 		{% if rp.track.mstl_track.get.get_itunes_detail %}
 			<td><img src={{ rp.track.mstl_track.get.get_itunes_detail.artwork_URL_60 }} class="img-polaroid"></td>
@@ -30,6 +31,7 @@
     {% endfor %}
 	</tbody>
 </table>
+{% if is_paginated %}{% load paginator %}{% paginator 3 %}{% endif %}
 {% else %}
     <p>No tracks are available.</p>
 {% endif %}

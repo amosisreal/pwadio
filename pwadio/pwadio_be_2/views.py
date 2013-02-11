@@ -3,27 +3,22 @@ from django.http import HttpResponse
 from pwadio_be_2.models import RunningPlaylist, MusicServices_Track_Lookup, ItunesTrackInfo, Track, Artist, RadioStation
 from django.template import Context, loader
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.generic.list_detail import object_list
 
 
 def index(request):
-    runningplaylist = RunningPlaylist.objects.select_related().order_by('-date_added')[:50]
-    num_stations = RadioStation.objects.count()
+    from django.db.models import Q
+    runningplaylist = RunningPlaylist.objects.select_related().order_by('-date_added')
+    #num_stations = RadioStation.objects.count()
 
-    template = loader.get_template('running_playlist/list.html')
-    context = Context({
-        'runningplaylist': runningplaylist,
-	    'num_stations': num_stations,
-    })
-    return HttpResponse(template.render(context))
+    return object_list(request, template_name='running_playlist/list.html', queryset=runningplaylist, paginate_by=25)
 
 def tracklist(request):
-    tracks = Track.objects.select_related().order_by('name')[:50]
+    from django.db.models import Q
 
-    template = loader.get_template('tracks/list.html')
-    context = Context({
-        'tracks': tracks,
-    })
-    return HttpResponse(template.render(context))
+    tracks = Track.objects.select_related().order_by('name')
+
+    return object_list(request, template_name='tracks/list.html', queryset=tracks, paginate_by=25)
 
 def trackdetail(request, id):
     tr = Track.objects.select_related().get(pk=id)
@@ -37,13 +32,11 @@ def trackdetail(request, id):
     return HttpResponse(template.render(context))
 
 def artistlist(request):
-    artists = Artist.objects.select_related().order_by('name')[:50]
+    from django.db.models import Q   
+    artists = Artist.objects.select_related().order_by('name')
     
-    template = loader.get_template('artists/list.html')
-    context = Context({
-        'artists': artists,
-    })
-    return HttpResponse(template.render(context))
+    return object_list(request, template_name='artists/list.html', queryset=artists, paginate_by=25)
+
 
 def artistdetail(request, id):
 
@@ -58,14 +51,11 @@ def artistdetail(request, id):
     return HttpResponse(template.render(context))
 
 def rslist(request):
-    radiostations = RadioStation.objects.select_related().order_by('name')[:50]
-    
-    template = loader.get_template('radiostations/list.html')
-    context = Context({
-        'radiostations': radiostations,
-    })
-    return HttpResponse(template.render(context))
+    from django.db.models import Q
 
+    radiostations = RadioStation.objects.select_related().order_by('name')
+    return object_list(request, template_name='radiostations/list.html', queryset=radiostations, paginate_by=25)
+    
 def rsdetail(request, id):
 
     rs = RadioStation.objects.select_related().get(pk=id)

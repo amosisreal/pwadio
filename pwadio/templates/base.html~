@@ -21,13 +21,19 @@
 	        <div class="container">
 	            <ul class="nav">
                     <li class="divider-vertical"><a href="/pwadio/">Running Playlist</a></li>
+                    <li class="divider-vertical"><a href="/pwadio/radiostations">Stations</a></li>
                     <li class="divider-vertical"><a href="/pwadio/artists">Artists</a></li>
                     <li class="divider-vertical"><a href="/pwadio/tracks">Tracks</a></li>
                     <!-- li class="divider-vertical"><a href="/pwadio/genre">Genres</a></li -->
-                    <li class="divider-vertical"><a href="/pwadio/radiostations">Stations</a></li>
-                    <form class="navbar-search pull-right">
-                        <input type="text" class="search-query" placeholder="Artist, Track, or Station">
-                    </form>
+
+					<form class="form-search pull-right navbar-search offset1" method="get" action="http://127.0.0.1:8000/pwadio/search/?q=q&models=pwadio_be_2.artist&models=pwadio_be_2.track">
+						<div class="input-append">
+							<input class="span2 search-query" type="text" placeholder="Artist or Track" name="q">
+						    <button class="btn" type="button">Search</button>
+						</div>
+					</form>
+
+                    
                 </ul>
             </div>    
         </div>    
