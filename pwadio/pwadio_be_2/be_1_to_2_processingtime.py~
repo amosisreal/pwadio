@@ -1,0 +1,52 @@
+## ORDER of OPERATIONS
+# 1 Run Processing times tables.
+# 2 Run Running Playlist tables.
+
+import MySQLdb
+import MySQLdb.cursors
+import imp, os
+import datetime
+from django.core.management import setup_environ
+path = '/home/amosbrown/pydev/pwadio/pwadio'
+f, filename, desc = imp.find_module('settings', [path])
+project = imp.load_module('settings', f, filename, desc)
+setup_environ(project)
+
+# Add django project to sys.path
+import sys
+sys.path.append(os.path.abspath(os.path.join(path, os.path.pardir)))
+from django.db import models
+import logging
+import itunes
+
+from pwadio_be_2.models import RunningPlaylist, RadioStation, ItunesTrackInfo, Artist, Track, ProcessingTime, Album, MusicServices, MusicServices_Artist_Lookup, MusicServices_Track_Lookup
+
+conn = MySQLdb.connect(host="localhost", user="root", passwd="password", db="pwadio_db", compress=1, cursorclass=MySQLdb.cursors.DictCursor)
+cursor = conn.cursor()
+
+### Grab data from pwadio_db.pwadio_processing_time and convert it to the format in use in pwadio_2013.pwadio_be_2_processingtime.
+table_name = "pwadio_processing_time"
+cursor.execute("select id, station_ID_id, date_added, download_site_time, processing_time, total_elapsed_time, number_of_tracks_added_this_batch from " + table_name + " order by id")
+
+rows = cursor.fetchall()
+rows_added = 0
+
+for row in rows:
+   # print row['id'], row['station_ID_id'], row['date_added'], row['download_site_time'], row['processing_time'], row['total_elapsed_time'], row['number_of_tracks_added_this_batch']
+    rs = RadioStation.objects.get(pk=1)
+    try:
+        check_pt = ProcessingTime.objects.get(date_added=row['date_added'])
+    except:
+	check_rp = None
+    if not check_rp:
+	calculated_finish_time = row['date_added'] # leaving this out for now. + datetime.timedelta(seconds=row['total_elapsed_time'])
+        logging.warning("[check_rp]: is None, add this row to the new database - date_added: " + str(row['date_added']))
+	pt = ProcessingTime.objects.create(date_added=row['date_added'], station_ID_id = 1, download_site_time=row['download_site_time'], processing_time=row['processing_time'], total_elapsed_time=row['total_elapsed_time'], number_of_tracks_added_this_batch=row['number_of_tracks_added_this_batch'], start_time=row['date_added'], finish_time=calculated_finish_time, finish_reason='Finished', )
+	rows_added += 1
+    else:
+        logging.warning("[check_rp] already exists in database - date_added: " + str(row['date_added']))
+
+logging.warning("Added [ %i ] new rows to PROCESSINGTIME" % rows_added)
+cursor.close()
+conn.close()
+
