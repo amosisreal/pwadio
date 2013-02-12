@@ -139,6 +139,11 @@ class RadioStation(models.Model):
         running_playlist = RunningPlaylist.objects.filter(radio_station=self).order_by('-date_added')[:50]
         return running_playlist
 
+    def last_time_played(self):
+        rp = RunningPlaylist.objects.filter(radio_station=self).order_by('-date_added')
+        return rp[0].date_added
+
+
 class ProcessingTime(models.Model):
     station_ID = models.ForeignKey(RadioStation)
     date_added = models.DateTimeField('Date Added')

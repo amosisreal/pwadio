@@ -39,9 +39,9 @@ con.text_factory = str
 #pull rows from itunes table
 with con:
     cur = con.cursor()
-    #cur.execute('SELECT * FROM runningPlaylist order by rp_DateAdded;')
+    cur.execute('SELECT * FROM runningPlaylist order by rp_DateAdded;')
 
-    cur.execute('SELECT * FROM runningPlaylist order by rp_DateAdded limit 1000;')
+    #cur.execute('SELECT * FROM runningPlaylist order by rp_DateAdded limit 1000;')
 
     rows = cur.fetchall()
     for row in rows:
@@ -54,6 +54,17 @@ with con:
         rs = RadioStation.objects.get(pk=1)
         ra = Artist.objects.get(pk=1)
         rt = Track.objects.get(pk=1)
+	
+	a_name = row[5]
+	if a_name and a_name[-1] == "*":
+	    a_name = a_name[:-1]
+	    logging.warning("Stripped trailing * from artist name text.") 
+	
+	t_name = row[6]
+	if t_name and t_name[-1] == "*":
+	    t_name = t_name[:-1]
+	    logging.warning("Stripped trailing * from track name text")
+
         try:
             check_rp = RunningPlaylist.objects.get(Unique_ID=row[1])
         except:
@@ -74,7 +85,7 @@ with con:
             except:
                 #print "Error %d: %s" % (e.args[0], e.args[1])
 	        try:
-		    add_artist = Artist.objects.create(name=row[5], date_added=datetime.utcfromtimestamp(float(row[2])))
+		    add_artist = Artist.objects.create(name=a_name, date_added=datetime.utcfromtimestamp(float(row[2])))
                     ra = add_artist 
 		    logger.warning("ARTIST doesn't exist in table, creating new ARTIST and setting current ARTIST to new ARTIST.")	
 	        except:
@@ -92,7 +103,7 @@ with con:
                     logging.warning("><><><><><><><><><><><><><><> strange race condition here.")
 	    except:
                 try:
-                    add_track = Track.objects.create(name=row[6], date_added=datetime.utcfromtimestamp(float(row[2])), artist=ra)
+                    add_track = Track.objects.create(name=t_name, date_added=datetime.utcfromtimestamp(float(row[2])), artist=ra)
                     rt = add_track
 		    logger.warning("TRACK doesn't exist in table, creating new TRACK and setting current TRACK to new TRACK.")
                 except:
@@ -106,8 +117,8 @@ with con:
 			date_added=datetime.utcfromtimestamp(float(row[2])), 
 			time_played=datetime.utcfromtimestamp(float(row[3])), 
 			radio_station=rs, 
-			artist_name_text=row[5], 
-			track_name_text=row[6], 
+			artist_name_text=a_name,
+			track_name_text=t_name, 
 			artist=ra, 
 			track=rt)
 	        rows_added += 1

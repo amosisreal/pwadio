@@ -4,7 +4,7 @@
 {% if object_list %}
 {% if is_paginated %}{% load paginator %}{% paginator 3 %}{% endif %}
 <table class="table table-striped table-hover table-condensed">
-<caption>Running Playlist from {{ num_stations }} stations.</caption>
+<!-- caption>Running Playlist from {{ num_stations }} stations.</caption -->
 	<tbody>
 	<thead>
 		<td></td>
@@ -26,7 +26,7 @@
 		<td><a href="{% url trackdetail rp.track.id %}" > {{ rp.track.name }} </a> ({{rp.track.rp_track.count}}) </td>
 		<td><a href="{% url artistdetail rp.artist.id %}" > {{rp.artist.name }} </a> ({{rp.artist.rp_artist.count}}) </td>	
 
-		<td>iTunes</td>
+		<td><a href="{{rp.track.mstl_track.get.get_itunes_detail.track_view_URL}}"> link to iTunes </a></td>
     </tr>	
     {% endfor %}
 	</tbody>

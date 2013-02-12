@@ -3,8 +3,8 @@
 {% block title %} Track Detail {% endblock title%}
 {% block content %}
 {% if artist %}
-<a href="{% url artistdetail artist.id %}" > {{artist.name }} </a> added on {{ artist.date_added|date:"m/d/y g:i A" }} and has been played {{ artist.rp_artist.count }} times. <br> <br/>
-This artist was most recently played on {{ artist.last_time_played|date:"m/d/y g:i A" }} <br/>
+<a href="{% url artistdetail artist.id %}" > {{artist.name }} </a> added on {{ artist.date_added|date:"m/d/y g:i A" }} and has been played {{ artist.rp_artist.count }} times. <br/>
+This artist was most recently played on {{ artist.last_time_played|date:"m/d/y g:i A" }} <br/><br/>
 {{ artist_tracks.count }} unique tracks by <a href="{% url artistdetail artist.id %}" > {{ artist.name }} </a><br/>
 
 
@@ -30,7 +30,11 @@ This artist was most recently played on {{ artist.last_time_played|date:"m/d/y g
 		<td>{{ tr.date_added|date:"m/d/y g:i A" }} </td>
 		<td>{{ tr.last_time_played|date:"m/d/y g:i A" }}</td>
 		<td>{{ tr.rp_track.count }} </td>
-		<td>iTunes</td>
+		{% if tr.mstl_track.get.get_itunes_detail %}
+			<td><a href="{{tr.mstl_track.get.get_itunes_detail.track_view_URL}} target="_blank"> Link to iTunes </a></td>
+		{% else %}
+			<td></td>
+		{% endif %}
     </tr>	
     {% endfor %}
 	</tbody>

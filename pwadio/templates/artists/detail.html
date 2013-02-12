@@ -30,7 +30,11 @@ This artist was most recently played on {{ artist.last_time_played|date:"m/d/y g
 		<td>{{ tr.date_added|date:"m/d/y g:i A" }} </td>
 		<td>{{ tr.last_time_played|date:"m/d/y g:i A" }}</td>
 		<td>{{ tr.rp_track.count }} </td>
-		<td>iTunes</td>
+		{% if tr.mstl_track.get.get_itunes_detail %}
+			<td><a href="{{tr.mstl_track.get.get_itunes_detail.track_view_URL}}" target="_blank"> Link to iTunes </a></td>
+		{% else %}
+			<td></td>
+		{% endif %}
     </tr>	
     {% endfor %}
 	</tbody>

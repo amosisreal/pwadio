@@ -23,7 +23,12 @@
 		<td><a href="{% url trackdetail tr.id %}" > {{ tr.name }} </a> </td>
 		<td><a href="{% url artistdetail tr.artist.id %}" > {{tr.artist.name }} </a></td>	
 		<td>{{ tr.rp_track.count }}</td>
-		<td>iTunes</td>
+		{% if tr.mstl_track.get.get_itunes_detail %}
+			<td><a href="{{tr.mstl_track.get.get_itunes_detail.track_view_URL}}" target="_blank"> Link to iTunes </a></td>
+		{% else %}
+			<td></td>
+		{% endif %}
+
     </tr>	
     {% endfor %}
 	</tbody>

@@ -25,8 +25,12 @@
 		<td>	{{ rp.time_played|date:"m/d/y g:i A" }}</td>
 		<td><a href="{% url trackdetail rp.track.id %}" > {{ rp.track.name }} </a> ({{rp.track.rp_track.count}}) </td>
 		<td><a href="{% url artistdetail rp.artist.id %}" > {{rp.artist.name }} </a> ({{rp.artist.rp_artist.count}}) </td>	
-
-		<td>iTunes</td>
+		{% if rp.track.mstl_track.get.get_itunes_detail %}
+			<td><a href="{{rp.track.mstl_track.get.get_itunes_detail.track_view_URL}}"> Link to iTunes </a></td>
+		{% else %}
+			<td></td>
+		{% endif %}
+		
     </tr>	
     {% endfor %}
 	</tbody>

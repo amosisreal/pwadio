@@ -4,7 +4,7 @@
 {% block content %}
 {% if tr %}
 <a href="{% url trackdetail tr.id %}">{{tr.name}}</a> by <a href="{% url artistdetail tr.artist.id %}" > {{tr.artist.name }} </a> played {{ tr.rp_track.count }} times. 
-<br/>
+<br/><br/>
 <table class="table table-striped table-hover table-condensed">
 <caption></caption>
 	<tbody>
@@ -12,6 +12,7 @@
 		<td></td>
 		<td>Station</td>
 		<td>Time Played</td>
+		<td>iTunes</td>
 	</thead>
     {% for times in tr.all_times_played %}
 	<tr>
@@ -22,6 +23,12 @@
 		{% endif %}
 		<td>{{ times.radio_station }}</td>	
 		<td>{{ times.date_added|date:"m/d/y g:i A" }} </td>
+		{% if tr.mstl_track.get.get_itunes_detail %}
+			<td><a href="{{tr.mstl_track.get.get_itunes_detail.track_view_URL}}"> Link to iTunes </a></td>
+		{% else %}
+			<td></td>
+		{% endif %}
+
 	</tr>	
     {% endfor %}
 	</tbody>

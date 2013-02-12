@@ -12,6 +12,7 @@
 		<td></td>
 		<td>Station</td>
 		<td>Time Played</td>
+		<td>iTunes</td>
 	</thead>
     {% for times in tr.all_times_played %}
 	<tr>
@@ -22,6 +23,12 @@
 		{% endif %}
 		<td>{{ times.radio_station }}</td>	
 		<td>{{ times.date_added|date:"m/d/y g:i A" }} </td>
+		{% if tr.mstl_track.get.get_itunes_detail %}
+			<td><a href="{{tr.mstl_track.get.get_itunes_detail.track_view_URL}}" target="_blank"> Link to iTunes </a></td>
+		{% else %}
+			<td></td>
+		{% endif %}
+
 	</tr>	
     {% endfor %}
 	</tbody>
