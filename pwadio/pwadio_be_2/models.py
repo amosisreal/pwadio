@@ -94,12 +94,20 @@ class Track(models.Model):
 
 class MusicServices_Artist_Lookup(models.Model):
     date_added = models.DateTimeField('Date Added')
-    artist = models.ForeignKey(Artist, related_name='+')
+    artist = models.ForeignKey(Artist, related_name='mstl_artist')
     music_service = models.ForeignKey(MusicServices, related_name='+')
     music_service_object_id_from_web = models.CharField(max_length=200)
 
     def __unicode__(self):
         return self.music_service_object_id_from_web
+
+    def get_itunes_detail(self):
+        mid = self.music_service_object_id_from_web
+        try:
+             it = ItunesTrackInfo.objects.get(artist_id=mid)	
+        except:
+             it = None
+        return it
 
 class MusicServices_Track_Lookup(models.Model):
     date_added = models.DateTimeField('Date Added')

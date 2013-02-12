@@ -39,9 +39,9 @@ con.text_factory = str
 #pull rows from itunes table
 with con:
     cur = con.cursor()
-    cur.execute('SELECT * FROM runningPlaylist order by rp_DateAdded;')
+    #cur.execute('SELECT * FROM runningPlaylist order by rp_DateAdded;')
 
-    #cur.execute('SELECT * FROM runningPlaylist order by rp_DateAdded limit 1000;')
+    cur.execute('SELECT * FROM runningPlaylist order by rp_DateAdded limit 10000;')
 
     rows = cur.fetchall()
     for row in rows:
@@ -72,8 +72,8 @@ with con:
         if not check_rp:
             logger.warning("[check_rp]: is None, add this row to the new database - Unique_ID: " + row[1])
 	    try:
-	        logger.warning("ARTIST name from radio station: [" + row[5]+ "].")
-                check_for_artist = Artist.objects.get(name__iexact=""+row[5]+"")
+	        logger.warning("ARTIST name from radio station: [" + a_name + "].")
+                check_for_artist = Artist.objects.get(name__iexact=""+a_name+"")
 	        logger.warning("Checking local ARTIST table by name: [" + check_for_artist.name + "].")
                 if check_for_artist:
                     ra = check_for_artist
@@ -93,8 +93,8 @@ with con:
 	            ra = Artist.objects.get(pk=1)
             # Compare item track_name_text to track.name - if exists do something, if not, add it.
 	    try:
-                logger.warning("TRACK name from radio station: [" + row[6]+ "].")
-                check_for_track = Track.objects.get(name =""+row[6]+"")
+                logger.warning("TRACK name from radio station: [" + t_name + "].")
+                check_for_track = Track.objects.get(name =""+t_name+"")
                 logger.warning("Checking local TRACK table for TRACK by name: [" + check_for_track.name + "].")
                 if check_for_artist:
                     rt = check_for_track
@@ -125,6 +125,41 @@ with con:
             except Exception as e:
                 logger.error("Exception found")
                 logger.error("Error %s" % (e.args[0]))
+	
+	    if row[7]:		   
+		ms = MusicServices.objects.get(pk=1)
+		try:
+	            check_a_msl = MusicServices_Artist_Lookup.objects.filter(artist=ra)
+	            logger.warning("ARTIST relationship [" + unicode(ra.id) +"] exists in table, skipping.")
+		except Exception as e:
+		    check_a_msl = None
+		    logger.warning("Setting ARTIST relationship to none. Error:" + unicode(e) + "!")
+
+		if not check_a_msl:
+		    try:
+		        a_msl = MusicServices_Artist_Lookup.objects.create(date_added=pt.start_time, artist=ra, music_service=ms, music_service_object_id_from_web=row[7])
+	                logger.warning("Created a new ARTIST lookup relationship")
+		    except Exception as e:
+		        logger.warning("Unable to assign ARTIST relationship to MusicServiceLookupTable. Error: " + unicode(e) + "!" )
+		       
+
+	    if row[8]:
+	        ms = MusicServices.objects.get(pk=1)
+	        try:
+	            check_t_msl = MusicServices_Track_Lookup.objects.filter(track=rt)
+                    logger.warning("TRACK relationship ["+ unicode(rt.id) + "] exists in table, skipping.")
+	        except Exception as e:
+		    check_t_msl = None
+		    logger.warning("Setting TRACK relationship to none. Error:" + unicode(e) + "!")
+
+	        if not check_t_msl:
+                    try:
+	                t_msl = MusicServices_Track_Lookup.objects.create(date_added=pt.start_time, track=rt, music_service=ms, music_service_object_id_from_web=row[8])
+	                logger.warning("Created a new TRACK lookup relationship")
+                    except Exception as e:
+		        logger.warning("Unable to assign TRACK relationship to MusicServiceLookupTable. Error:" + unicode(e) + "!")
+
+
         else:
             logger.warning("[check_rp] already exists in database - Unique_ID: " + row[1])
 

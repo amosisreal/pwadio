@@ -26,7 +26,7 @@
                     <li class="divider-vertical"><a href="/pwadio/tracks">Tracks</a></li>
                     <!-- li class="divider-vertical"><a href="/pwadio/genre">Genres</a></li -->
 
-					<form class="form-search pull-right navbar-search offset1" method="get" action="http://127.0.0.1:8000/pwadio/search/?q=q&models=pwadio_be_2.artist&models=pwadio_be_2.track">
+					<form class="form-search pull-right navbar-search offset2" method="get" action="http://127.0.0.1:8000/pwadio/search/?q=q&models=pwadio_be_2.artist&models=pwadio_be_2.track">
 						<div class="input-append">
 							<input class="span2 search-query" type="text" placeholder="Artist or Track" name="q">
 						    <button class="btn" type="button">Search</button>

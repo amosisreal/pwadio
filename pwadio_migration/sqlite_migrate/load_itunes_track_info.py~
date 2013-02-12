@@ -38,9 +38,9 @@ con = lite.connect(sqlite_db)
 #pull rows from itunes table
 with con:
     cur = con.cursor()
-    cur.execute('SELECT * FROM iTunesSongInfo order by it_Dateadded;')
+    #cur.execute('SELECT * FROM iTunesSongInfo order by it_Dateadded;')
 
-    #cur.execute('SELECT * FROM iTunesSongInfo order by it_Dateadded limit 1000;')
+    cur.execute('SELECT * FROM iTunesSongInfo order by it_Dateadded limit 1000;')
 
     rows = cur.fetchall()
     for row in rows:

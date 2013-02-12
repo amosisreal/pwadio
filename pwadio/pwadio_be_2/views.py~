@@ -51,14 +51,11 @@ def artistdetail(request, id):
     return HttpResponse(template.render(context))
 
 def rslist(request):
-    radiostations = RadioStation.objects.select_related().order_by('name')[:50]
-    
-    template = loader.get_template('radiostations/list.html')
-    context = Context({
-        'radiostations': radiostations,
-    })
-    return HttpResponse(template.render(context))
+    from django.db.models import Q
 
+    radiostations = RadioStation.objects.select_related().order_by('name')
+    return object_list(request, template_name='radiostations/list.html', queryset=radiostations, paginate_by=25)
+    
 def rsdetail(request, id):
 
     rs = RadioStation.objects.select_related().get(pk=id)
@@ -67,5 +64,12 @@ def rsdetail(request, id):
     context = Context({
         'rs': rs,
 
+    })
+    return HttpResponse(template.render(context))
+
+def about(request):
+
+    template = loader.get_template('about..html')
+    context = Context({
     })
     return HttpResponse(template.render(context))

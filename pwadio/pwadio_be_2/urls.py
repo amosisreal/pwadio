@@ -29,5 +29,5 @@ urlpatterns = patterns('',
     url(r'^radiostations/$', views.rslist, name='rslist'),
     url(r'^radiostations/(?P<id>\d+)/$', views.rsdetail, name='rsdetail'),
     url(r'^search/', include('haystack.urls')),
-
+    url(r'^about/', views.about, name='about'),
 )

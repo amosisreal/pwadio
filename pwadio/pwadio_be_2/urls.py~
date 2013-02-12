@@ -28,5 +28,6 @@ urlpatterns = patterns('',
     url(r'^artists/(?P<id>\d+)/$', views.artistdetail, name='artistdetail'),
     url(r'^radiostations/$', views.rslist, name='rslist'),
     url(r'^radiostations/(?P<id>\d+)/$', views.rsdetail, name='rsdetail'),
+    url(r'^search/', include('haystack.urls')),
 
 )

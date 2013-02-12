@@ -31,13 +31,22 @@ class PwadioStationWknc2Pipeline(object):
 	    log.msg("true_date is is more recent than last_date_in_db, add it to db", level=log.INFO)
             item['processing_time'].number_of_tracks_added_this_batch += 1
 	    item['processing_time'].save()	
-	    # Okay, now we have a new track, let's get the itunes info based on
-	    # artist and track name.
+
+	    a_name = item['artist_name_text']
+	    if a_name and a_name[-1] == "*":
+	        a_name = a_name[:-1]
+	        log.msg("Stripped trailing * from artist name text.", level=log.INFO) 
+	
+	    t_name = item['track_name_text']
+	    if t_name and t_name[-1] == "*":
+	        t_name = t_name[:-1]
+	        log.msg("Stripped trailing * from track name text", level=log.INFO)
+
             ### New flow here
             # Compare item artist_name_text to artist.name - if exists do something, if not add it.
             try:
-		log.msg("ARTIST name from radio station: [" + item['artist_name_text']+ "].", level=log.INFO)
-        	check_for_artist = Artist.objects.get(name__iexact=""+item['artist_name_text']+"")
+		log.msg("ARTIST name from radio station: [" + a_name + "].", level=log.INFO)
+        	check_for_artist = Artist.objects.get(name__iexact=""+a_name+"")
 		log.msg("Checking local ARTIST table by name: [" + check_for_artist.name + "].", level=log.INFO)
                 if check_for_artist:
                     item['artist'] = check_for_artist
@@ -49,7 +58,7 @@ class PwadioStationWknc2Pipeline(object):
             except:
                 #print "Error %d: %s" % (e.args[0], e.args[1])
 		try:
-		    add_artist = Artist.objects.create(name=item['artist_name_text'], date_added=item['true_date'])
+		    add_artist = Artist.objects.create(name=a_name, date_added=item['true_date'])
                     item['artist'] = add_artist 
 		    log.msg("ARTIST doesn't exist in table, creating new ARTIST and setting current ARTIST to new ARTIST.", level=log.INFO)	
 		except:
@@ -57,8 +66,8 @@ class PwadioStationWknc2Pipeline(object):
 	            item['artist'] = Artist.objects.get(pk=1)
             # Compare item track_name_text to track.name - if exists do something, if not, add it.
             try:
-                log.msg("TRACK name from radio station: [" + item['track_name_text']+ "].", level=log.INFO)
-                check_for_track = Track.objects.get(name =""+item['track_name_text']+"")
+                log.msg("TRACK name from radio station: [" + t_name + "].", level=log.INFO)
+                check_for_track = Track.objects.get(name =""+t_name+"")
                 log.msg("Checking local TRACK table for TRACK by name: [" + check_for_track.name + "].", level=log.INFO)
                 if check_for_artist:
                     item['track'] = check_for_track
@@ -67,7 +76,7 @@ class PwadioStationWknc2Pipeline(object):
                     log.msg("><><><><><><><><><><><><><><> strange race condition here.", level=log.INFO)
 	    except:
                 try:
-                    add_track = Track.objects.create(name=item['track_name_text'], date_added=item['true_date'], artist=item['artist'])
+                    add_track = Track.objects.create(name=t_name, date_added=item['true_date'], artist=item['artist'])
                     item['track'] = add_track
 		    log.msg("TRACK doesn't exist in table, creating new TRACK and setting current TRACK to new TRACK.", level=log.INFO)
                 except:

@@ -66,3 +66,10 @@ def rsdetail(request, id):
 
     })
     return HttpResponse(template.render(context))
+
+def about(request):
+
+    template = loader.get_template('about.html')
+    context = Context({
+    })
+    return HttpResponse(template.render(context))

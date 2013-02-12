@@ -1,6 +1,12 @@
+<tr>
+    <td></td>
+	<td><a href="{% url artistdetail result.object.id %}" > {{result.object.name }} </a></td>	
+	<td>{{ result.object.t_artist.all.count }} </td>
+	<td>{{ result.object.rp_artist.count }} </td>
+	{% if result.object.t_artist.mstl_track.get.get_itunes_detail %}
+			<td><a href="{{result.object.mstl_artist.get.get_itunes_detail.artist_view_URL}}" target="_blank"> Link to iTunes </a></td>
+		{% else %}
+			<td></td>
+		{% endif %}
+</tr>	
 
-<p>
-	{{ result.content_type }} >>> 
-    <a href="{% url artistdetail result.object.id %}">{{ result.object.name }}</a> <br/>
-	Date Added: {{ result.object.date_added }} 
-</p>

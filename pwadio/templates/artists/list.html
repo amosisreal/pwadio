@@ -19,8 +19,8 @@
 		<td><a href="{% url artistdetail ar.id %}" > {{ar.name }} </a></td>	
 		<td>{{ ar.t_artist.all.count }} </td>
 		<td>{{ ar.rp_artist.count }} </td>
-		{% if ar.t_artist.get_itunes_detail %}
-			<td><a href="{{ar.t_artist.get_itunes_detail.track_view_URL}}"> Link to iTunes </a></td>
+		{% if ar.mstl_artist.get.get_itunes_detail %}
+			<td><a href="{{ar.mstl_artist.get.get_itunes_detail.artist_view_URL}}"> Link to iTunes </a></td>
 		{% else %}
 			<td></td>
 		{% endif %}
